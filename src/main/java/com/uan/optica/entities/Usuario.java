@@ -22,7 +22,9 @@ public class Usuario {
     private String correo;
     private String direccion;
     private long telefono;
-    private String contraseña;
+    private String password;
 
     private String rol;
+    private String cedula;
+
 }

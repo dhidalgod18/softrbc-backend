@@ -12,24 +12,11 @@ import java.util.List;
 public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
-    @Override
-    public List<Usuario> obtenerTodas() {
-        return usuarioRepository.findAll();
-    }
-
-    @Override
-    public Usuario obtenerPersonaPorID(int id) {
-        return usuarioRepository.findById(id).orElse(null);
-    }
 
     @Override
     public Usuario crearPersona(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
-    @Override
-    public Usuario validarInicioSesion(String correo, String contraseña) {
-       return usuarioRepository.findByCorreoAndContraseña(correo,contraseña);
 
-    }
 }
