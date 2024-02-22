@@ -37,17 +37,19 @@ public class UsuarioController {
     @PostMapping("/nueva")
     public ResponseEntity<?> guardarNuevaUsuario(@RequestBody Map<String, Object> requestBody) {
         try {
+
             // Extraer los datos del usuario del cuerpo de la solicitud
             Map<String, Object> usuarioMap = (Map<String, Object>) requestBody.get("usuario");
+            System.out.println("Usuario: " + usuarioMap);
             // Crear un objeto Usuario a partir de los datos recibidos
             Usuario usuario = new Usuario();
             usuario.setNombre((String) usuarioMap.get("nombre"));
             usuario.setApellido((String) usuarioMap.get("apellido"));
             usuario.setCorreo((String) usuarioMap.get("correo"));
             usuario.setDireccion((String) usuarioMap.get("direccion"));
-            usuario.setTelefono(((Long) usuarioMap.get("telefono")).intValue()); // Convertir a int
+            usuario.setTelefono(Long.parseLong((String) usuarioMap.get("telefono")));
             usuario.setPassword((String) usuarioMap.get("password"));
-            usuario.setCedula((String) usuarioMap.get("cedula"));
+            usuario.setCedula(Long.parseLong((String) usuarioMap.get("cedula")));
             usuario.setRol("ROLE_OPTOMETRA");
 
             // Extraer el objeto optometra del cuerpo de la solicitud
@@ -64,13 +66,11 @@ public class UsuarioController {
 
             // Crear el optometra
             Optometra optometra = new Optometra();
-            optometra.setNumeroTarjeta(numeroTarjeta);
-
-            optometra.setIdUsuario(usuario.getIdusuario()); // Asignar el ID del usuario
-
+            optometra.setNumerotarjeta(numeroTarjeta);
+            optometra.setIdusuario(usuario.getIdusuario()); // Asignar el ID del usuario
             optometra.setActivo(true);
             optometraService.crearOptometra(optometra);
-            int idUsuarioAsignado = optometra.getIdUsuario();
+            int idUsuarioAsignado = optometra.getIdusuario();
             System.out.println(idUsuarioAsignado+"id tarjeta");
 
 

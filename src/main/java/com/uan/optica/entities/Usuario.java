@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,10 +22,10 @@ public class Usuario {
     private String apellido;
     private String correo;
     private String direccion;
-    private long telefono;
+    private Long telefono;
     private String password;
 
     private String rol;
-    private String cedula;
+    private Long cedula;
 
 }
