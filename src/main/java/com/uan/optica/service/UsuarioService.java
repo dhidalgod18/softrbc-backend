@@ -11,7 +11,10 @@ public interface UsuarioService {
 
 
     boolean crearPersona(Usuario usuario);
-    List<Usuario> obtenerTodas();
+     List<Usuario> obtenerUsuariosOptometra();
+    boolean modificarDatosOptometra(int idUsuario, String nuevadireccion, String nuevocorreo, String nuevotelefono);
+
+    boolean cambiarEstadoUsuario(int idUsuario);
 
 
 
