@@ -1,6 +1,7 @@
 package com.uan.optica.service;
 
 import com.uan.optica.entities.Usuario;
+import com.uan.optica.entities.UsuarioOptometraDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +12,8 @@ public interface UsuarioService {
 
 
     boolean crearPersona(Usuario usuario);
-     List<Usuario> obtenerUsuariosOptometra();
-    boolean modificarDatosOptometra(int idUsuario, String nuevadireccion, String nuevocorreo, String nuevotelefono);
+    List<UsuarioOptometraDTO> obtenerUsuariosOptometraDTO();
+    boolean modificarDatosOptometra(int idUsuario, String nuevadireccion, String nuevocorreo, Long nuevotelefono);
 
     boolean cambiarEstadoUsuario(int idUsuario);
 

@@ -2,6 +2,7 @@ package com.uan.optica.controller;
 
 import com.uan.optica.entities.Optometra;
 import com.uan.optica.entities.Usuario;
+import com.uan.optica.entities.UsuarioOptometraDTO;
 import com.uan.optica.service.EnvioCorreoService;
 import com.uan.optica.service.OptometraService;
 import com.uan.optica.service.UsuarioService;
@@ -42,18 +43,23 @@ public class UsuarioController {
         }
         return optometras;
     }*/
-
+    @GetMapping("/listaOptometras")
+    public ResponseEntity<List<UsuarioOptometraDTO>> obtenerUsuariosOptometra() {
+        List<UsuarioOptometraDTO> usuariosOptometraDTO = usuarioService.obtenerUsuariosOptometraDTO()  ;
+        return ResponseEntity.ok(usuariosOptometraDTO);
+    }
+/**
     @GetMapping("/listaOptometras")
     public List<Usuario> listaOptometras() {
         return usuarioService.obtenerUsuariosOptometra();
-    }
+    }*/
     @PutMapping("/modificar/{id}")
     public ResponseEntity<?> editarDatosOptometra(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) {
         String nuevadireccion = (String) requestBody.get("nuevadireccion");
         String nuevocorreo = (String) requestBody.get("nuevocorreo");
-        String nuevotelefono = (String) requestBody.get("nuevotelefono");
+        Long nuevotelefono = Long.parseLong((String) requestBody.get("nuevotelefono"));
 
-        if (nuevadireccion == null || nuevocorreo == null || nuevotelefono == null) {
+        if (nuevadireccion == null || nuevocorreo == null) {
             return ResponseEntity.badRequest().body("Falta información requerida");
         }
 

@@ -20,4 +20,7 @@ public interface UsuarioRepository  extends JpaRepository<Usuario, Integer> {
     List<Usuario> findByRol(@Param("rol") String rol);
 
 
+
+
+
 }
