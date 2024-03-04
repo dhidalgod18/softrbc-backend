@@ -27,5 +27,5 @@ public class Usuario {
 
     private String rol;
     private Long cedula;
-
+    private String codigorecuperacion;
 }

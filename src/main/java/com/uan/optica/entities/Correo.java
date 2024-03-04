@@ -16,6 +16,8 @@ public class Correo {
     private String mensaje;
     private String correousuario; // Correo del usuario
     private String contraseñagenerada; // Contraseña generada por el sistema
+    private String codigorecuperacion; // Contraseña generada por el sistema
+
 
 
 }

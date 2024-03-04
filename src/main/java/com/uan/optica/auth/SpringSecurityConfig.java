@@ -24,7 +24,12 @@ public class SpringSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeRequests()
             .requestMatchers(HttpMethod.GET, "/usuarios").permitAll()
+                .requestMatchers(HttpMethod.GET, "/usuarios/verificarCodigoRecuperacion").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/usuarios/actualizarContrasena").permitAll()
                 .requestMatchers(HttpMethod.POST, "/usuarios/nueva").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/calendario/nueva").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/calendario//modificar/{id}").hasRole("ADMIN")
+
 
                 .anyRequest().authenticated()
             .and()

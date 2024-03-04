@@ -16,6 +16,7 @@ public class Calendario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idcalendario;
-    private String diasAtencion;
+    private String diasatencion;
     private int duracioncita;
+    private int idoptometra;
 }

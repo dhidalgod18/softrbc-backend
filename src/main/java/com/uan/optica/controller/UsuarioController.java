@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import static com.uan.optica.filtros.CodigoRecuperacion.generarCodigoRecuperacion;
 import static com.uan.optica.filtros.PasswordAleatorio.generarPassword;
 
 
@@ -101,6 +102,11 @@ public class UsuarioController {
             if (numeroTarjeta == null) {
                 return ResponseEntity.badRequest().body("El número de tarjeta es requerido para el optometra");
             }
+            String codigorec = generarCodigoRecuperacion();
+            System.out.println(codigorec + "codigo recuperacion que genero");
+            String rescodigo = passwordEncoder.encode(codigorec);
+            System.out.println(rescodigo + "codigo encriptada");
+            usuario.setCodigorecuperacion(rescodigo);
 
             // Crear el usuario
             usuarioService.crearPersona(usuario);
@@ -118,7 +124,7 @@ public class UsuarioController {
 
 
 
-            envioCorreoService.enviarCorreo(usuario.getCorreo(), "Registro exitoso", usuario.getCorreo(), pass);
+            envioCorreoService.enviarCorreo(usuario.getCorreo(), "Registro exitoso", usuario.getCorreo(), pass,codigorec);
 
             return ResponseEntity.ok().build(); // Registro exitoso
 
@@ -139,6 +145,49 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo cambiar el estado del optometra");
         }
     }
+    @GetMapping("/verificarCodigoRecuperacion")
+    public ResponseEntity<?> verificarCodigoRecuperacion(@RequestParam String correo, @RequestParam String codigorecuperacion) {
+
+        // Buscar en la base de datos el usuario con el correo proporcionado
+        Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(correo);
+        System.out.println(usuario.getCorreo()+"Que correo trae ");
+
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario con el correo proporcionado no existe");
+        }
+
+        // Verificar si el código de recuperación proporcionado coincide con el almacenado en la base de datos
+        if (passwordEncoder.matches(codigorecuperacion, usuario.getCodigorecuperacion())) {
+            // Si coincide, devolver un mensaje de éxito y permitir al usuario agregar la nueva contraseña
+            return ResponseEntity.ok().build();
+        } else {
+            // Si no coincide, devolver un mensaje de error
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El código de recuperación proporcionado no es válido.");
+        }
+    }
+
+    @PutMapping("/actualizarContrasena")
+    public ResponseEntity<?> actualizarContraseña(@RequestBody Map<String, Object> requestBody) {
+        String correo = (String) requestBody.get("correo");
+        String nuevaContraseña = (String) requestBody.get("nuevacontrasena");
+        // Buscar en la base de datos el usuario con el correo proporcionado
+        Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(correo);
+        if (usuario == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario con el correo proporcionado no existe");
+        }
+
+        // Actualizar la contraseña del usuario
+        boolean actualizacionContraseñaExitosa = usuarioService.actualizarContraseña(usuario.getIdusuario(), nuevaContraseña);
+        if (actualizacionContraseñaExitosa) {
+            // Si la actualización de la contraseña es exitosa, devolver un mensaje de éxito
+            return ResponseEntity.ok().build();
+        } else {
+            // Si ocurre un error al actualizar la contraseña, devolver un mensaje de error
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar la contraseña del usuario");
+        }
+    }
+
+
 
 
 

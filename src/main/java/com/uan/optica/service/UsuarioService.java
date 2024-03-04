@@ -16,6 +16,10 @@ public interface UsuarioService {
     boolean modificarDatosOptometra(int idUsuario, String nuevadireccion, String nuevocorreo, Long nuevotelefono);
 
     boolean cambiarEstadoUsuario(int idUsuario);
+    Usuario obtenerUsuarioPorCorreo(String correo);
+    boolean actualizarContraseña(int idUsuario, String nuevaContraseña);
+
+
 
 
 

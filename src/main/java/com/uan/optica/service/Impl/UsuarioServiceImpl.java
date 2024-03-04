@@ -91,6 +91,33 @@ public class UsuarioServiceImpl implements UsuarioService {
         return false;
     }
 
+    @Override
+    public Usuario obtenerUsuarioPorCorreo(String correo) {
+        Usuario usuario = usuarioRepository.getUserByUserName(correo);
+        if (usuario != null) {
+            System.out.println("Usuario encontrado: " + usuario.getNombre()); // Imprime el nombre del usuario encontrado
+        } else {
+            System.out.println("Usuario no encontrado para el correo: " + correo);
+        }
+        return usuario;
+    }
 
-
+    @Override
+    public boolean actualizarContraseña(int idUsuario, String nuevaContraseña) {
+        try {
+            Optional<Usuario> optionalUsuario = usuarioRepository.findById(idUsuario);
+            if (optionalUsuario.isPresent()) {
+                Usuario usuario = optionalUsuario.get();
+                String nuevaContraseñaEncriptada = passwordEncoder.encode(nuevaContraseña);
+                usuario.setPassword(nuevaContraseñaEncriptada);
+                usuarioRepository.save(usuario);
+                return true;
+            } else {
+                return false; // El usuario no fue encontrado
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

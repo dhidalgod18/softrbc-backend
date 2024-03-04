@@ -27,7 +27,7 @@ public class EnvioCorreoController {
 
             System.out.println("Llega mensaje: " + correo.toString());
 
-            envioCorreoService.enviarCorreo(correo.getDestinatario(), correo.getAsunto(), correo.getCorreousuario(), correo.getContraseñagenerada());
+            envioCorreoService.enviarCorreo(correo.getDestinatario(), correo.getAsunto(), correo.getCorreousuario(), correo.getContraseñagenerada(), correo.getCodigorecuperacion());
 
             Map<String, String> response = new HashMap<>();
             response.put("message", "Correo enviado");
