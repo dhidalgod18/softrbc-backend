@@ -44,7 +44,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         for (Usuario usuario : usuarios) {
             Optometra optometra = optometraRepository.findByUsuarioId(usuario.getIdusuario());
             if (optometra != null) {
-                usuariosOptometraDTO.add(new UsuarioOptometraDTO(usuario, optometra.getNumerotarjeta(), optometra.isActivo()));
+                usuariosOptometraDTO.add(new UsuarioOptometraDTO(usuario, optometra.getIdoptometra(),optometra.getNumerotarjeta(), optometra.isActivo()));
             }
         }
 

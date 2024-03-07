@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class UsuarioOptometraDTO {
     private Usuario usuario;
+    private int idoptometra;
     private String numerotarjeta;
     private boolean activo;
 }

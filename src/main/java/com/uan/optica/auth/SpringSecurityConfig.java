@@ -29,6 +29,11 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/usuarios/nueva").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/calendario/nueva").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/calendario//modificar/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/preguntas/nueva").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/preguntas/modificar/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/preguntas/eliminar/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/preguntas").permitAll()
+
 
 
                 .anyRequest().authenticated()

@@ -20,8 +20,8 @@ public class CalendarioController {
         try {
             Calendario calendario = new Calendario();
             calendario.setDiasatencion((String) requestBody.get("diasatencion"));
-            calendario.setDuracioncita(Integer.parseInt((String)  requestBody.get("duracioncita")));
-            calendario.setIdoptometra(Integer.parseInt((String)  requestBody.get("idoptometra")));
+            calendario.setDuracioncita((int)  requestBody.get("duracioncita"));
+            calendario.setIdoptometra((int)  requestBody.get("idoptometra"));
 
             calendarioService.crearCalendario(calendario);
 
