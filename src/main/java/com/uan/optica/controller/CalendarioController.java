@@ -50,6 +50,16 @@ public class CalendarioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar los datos del calendario");
         }
     }
+    @GetMapping("/duracioncita/{dia}")
+    public ResponseEntity<?> obtenerDuracionCitaPorDia(@PathVariable("dia") String dia) {
+        try {
+            int duracionCita = calendarioService.duracioncita(dia);
+            return ResponseEntity.ok(duracionCita);
+        } catch (Exception e) {
+            String errorMessage = "Error al intentar obtener duración de cita: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+        }
+    }
 
 
 }

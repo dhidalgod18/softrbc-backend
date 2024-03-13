@@ -18,10 +18,12 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idPaciente;
     private String ocupacion;
-    private LocalDate fechaNacimiento;
+    private LocalDate fechanacimiento;
 
-    private GeneroEnum generoEnum;
-    private String nombreAcompañante;
+    private String genero;
+    private String nombreacompañante;
+
+    private int idusuario;
 
     public enum GeneroEnum {
         Masculino,

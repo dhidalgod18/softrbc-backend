@@ -45,4 +45,15 @@ public class CalendarioServiceImpl implements CalendarioService {
             return false;
         }
     }
+
+    @Override
+    public int duracioncita(String dia) {
+        Integer duracionCita = calendarioRepository.obtenerDuracionCitaPorDia(dia);
+        System.out.println(duracionCita+"Duracioncitaaaaaaaaaa");
+        if (duracionCita != null) {
+            return duracionCita;
+        } else {
+            throw new RuntimeException("No se encontró la duración de la cita para el día proporcionado");
+        }
+    }
 }

@@ -84,6 +84,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             claims.put("isAdmin", true);
         } else if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_OPTOMETRA"))) {
             claims.put("isOptometra", true);
+        } else if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_PACIENTE"))) {
+            claims.put("isPaciente", true);
+
         }
         String token = Jwts.builder()
                 .setClaims(claims)
