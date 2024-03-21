@@ -77,6 +77,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String rol = ((MyUserDetails) authResult.getPrincipal()).getRol();
         String nombre = ((MyUserDetails) authResult.getPrincipal()).getNombre();
         String apellido = ((MyUserDetails) authResult.getPrincipal()).getApellido();
+        Long telefono = ((MyUserDetails) authResult.getPrincipal()).getTelefono();
+        int idPaciente = ((MyUserDetails) authResult.getPrincipal()).getIdpaciente(); // Obtener el ID del paciente
+
+
+
+
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
         Claims claims = Jwts.claims();
         claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
@@ -102,6 +108,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("nombre", nombre);
         body.put("apellido", apellido);
         body.put("username", correo);
+        body.put("telefono", telefono);
+        body.put("idpaciente", idPaciente);
+
+
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(200);
         response.setContentType("application/json");

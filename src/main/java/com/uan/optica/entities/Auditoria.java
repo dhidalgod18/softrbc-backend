@@ -9,26 +9,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Paciente {
+
+public class Auditoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idpaciente;
-    private String ocupacion;
-    private LocalDate fechanacimiento;
-
-    private String genero;
-    private String nombreacompañante;
-
-    private int idusuario;
-
-    public enum GeneroEnum {
-        Masculino,
-        Femenino,
-
-    }
+    int idauditoria;
+    LocalDate fecha;
+    String accion;
+    int idusuario;
+    String informacion;
 
 }

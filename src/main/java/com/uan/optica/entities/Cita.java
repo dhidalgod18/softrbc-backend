@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
@@ -16,9 +17,11 @@ import java.time.LocalDateTime;
 public class Cita {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
-    LocalDateTime fechahoracita;
-    String descripcion;
-    String nombre;
-    String telefono;
+   private int id;
+    private String fecha;
+    private String nombre;
+    private Long telefono;
+    private int idpaciente;
+    private String codigo;
+    private String hora;
 }

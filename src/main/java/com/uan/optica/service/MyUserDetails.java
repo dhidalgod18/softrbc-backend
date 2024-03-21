@@ -2,6 +2,7 @@ package com.uan.optica.service;
 
 import com.uan.optica.entities.Usuario;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,8 +13,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class MyUserDetails implements UserDetails {
     private Usuario user;
-
-
+    private int idpaciente;
 
     /**Obtener los roles de un usuario*/
     @Override
@@ -43,6 +43,18 @@ public class MyUserDetails implements UserDetails {
     public String getApellido() {
         return user.getApellido();
     }
+    public Long getTelefono() {
+        return user.getTelefono();
+    }
+    public int getIdpaciente() {
+        return idpaciente;
+    }
+
+
+
+
+
+
 
 
     @Override
