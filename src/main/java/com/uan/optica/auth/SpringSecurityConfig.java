@@ -36,6 +36,10 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/calendario/duracioncita/{dia}").hasRole("PACIENTE")
                 .requestMatchers(HttpMethod.POST, "/paciente/nueva").permitAll()
                 .requestMatchers(HttpMethod.POST, "/cita/nueva").permitAll()
+                .requestMatchers(HttpMethod.POST, "/cita/lista").permitAll()
+                .requestMatchers(HttpMethod.GET, "/cita/verificarCodigo").permitAll()
+
+
 
 
 
