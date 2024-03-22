@@ -12,6 +12,7 @@ public interface CitaService {
     List<String> obtenerCita(String hora);
 
     Cita obtenerCitaporIdpaciente(int idpaciente);
+    boolean eliminarCita(String codigo);
 
 
 }

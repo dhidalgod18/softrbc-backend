@@ -24,12 +24,17 @@ public class CitaServiceImpl implements CitaService {
 
     @Override
     public Cita obtenerCitaporIdpaciente(int idpaciente) {
-        Cita cita = citaRepository.getCita(String.valueOf(idpaciente));
+        Cita cita = citaRepository.getCita(idpaciente);
         if (cita != null) {
             System.out.println("Cita encontrado: " + cita.getFecha()); // Imprime el nombre del usuario encontrado
         } else {
             System.out.println("Cita no encontrado para el ispaciente: " + idpaciente);
         }
         return cita;
+    }
+
+    @Override
+    public boolean eliminarCita(String codigo) {
+        return citaRepository.eliminarCitaPorCodigo(codigo);
     }
 }

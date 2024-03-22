@@ -18,6 +18,9 @@ public class Correo {
     private String contraseñagenerada; // Contraseña generada por el sistema
     private String codigorecuperacion; // Contraseña generada por el sistema
 
+    private String codigocita;
+    private  Cita cita;
+
 
 
 }

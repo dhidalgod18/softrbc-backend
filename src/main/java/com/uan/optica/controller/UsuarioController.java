@@ -124,7 +124,7 @@ public class UsuarioController {
 
 
 
-            envioCorreoService.enviarCorreo(usuario.getCorreo(), "Registro exitoso", usuario.getCorreo(), pass,codigorec);
+            envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getCorreo(), pass,codigorec);
 
             return ResponseEntity.ok().build(); // Registro exitoso
 

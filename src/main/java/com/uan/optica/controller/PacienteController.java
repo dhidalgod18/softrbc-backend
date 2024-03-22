@@ -2,6 +2,7 @@ package com.uan.optica.controller;
 
 import com.uan.optica.entities.Paciente;
 import com.uan.optica.entities.Usuario;
+import com.uan.optica.service.EnvioCorreoService;
 import com.uan.optica.service.PacienteService;
 import com.uan.optica.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,10 @@ public class PacienteController {
     private PacienteService pacienteService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EnvioCorreoService envioCorreoService;
+
 
 
 
@@ -78,6 +83,7 @@ public class PacienteController {
             System.out.println(paciente.toString()+"Paciente");
 
             pacienteService.crearPaciente(paciente);
+
 
 
             return ResponseEntity.ok().build(); // Registro exitoso

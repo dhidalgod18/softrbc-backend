@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Cita {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private int id;
+    private int idcita;
     private String fecha;
     private String nombre;
     private Long telefono;

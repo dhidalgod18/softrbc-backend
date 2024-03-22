@@ -1,12 +1,19 @@
 package com.uan.optica.service.Impl;
 
 import com.uan.optica.entities.Calendario;
-import com.uan.optica.entities.Usuario;
+import com.uan.optica.entities.Cita;
 import com.uan.optica.repository.CalendarioRepository;
 import com.uan.optica.service.CalendarioService;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,6 +61,35 @@ public class CalendarioServiceImpl implements CalendarioService {
             return duracionCita;
         } else {
             throw new RuntimeException("No se encontró la duración de la cita para el día proporcionado");
+        }
+    }
+
+    @Override
+    public List<Cita> obtenercitas(String fecha) {
+        return calendarioRepository.obtenerCitasPorFecha(fecha);
+
+    }
+
+    @Override
+    public void generarPdfCitasPorFecha(String fecha) {
+        try {
+            List<Cita> citas = obtenercitas(fecha);
+
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream("citas_" + fecha + ".pdf"));
+            document.open();
+
+            for (Cita cita : citas) {
+                document.add(new Paragraph("Nombre: " + cita.getNombre()));
+                document.add(new Paragraph("Teléfono: " + cita.getTelefono()));
+                document.add(new Paragraph("Hora: " + cita.getHora()));
+                document.add(new Paragraph("\n"));
+            }
+
+            document.close();
+            System.out.println("PDF generado correctamente.");
+        } catch (DocumentException | IOException e) {
+            e.printStackTrace();
         }
     }
 }

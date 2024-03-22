@@ -23,15 +23,18 @@ public class EnvioCorreoController {
         private EnvioCorreoService envioCorreoService;
 
         @PostMapping("/envio")
-        public ResponseEntity<?> sendMail(@RequestBody Correo correo) {
-
-            System.out.println("Llega mensaje: " + correo.toString());
-
-            envioCorreoService.enviarCorreo(correo.getDestinatario(), correo.getAsunto(), correo.getCorreousuario(), correo.getContraseñagenerada(), correo.getCodigorecuperacion());
-
+        public ResponseEntity<?> enviarCorreoRegistroOptometra(@RequestBody Correo correo) {
+            envioCorreoService.enviarCorreoRegistroOptometra(correo.getDestinatario(), correo.getAsunto(), correo.getCorreousuario(), correo.getContraseñagenerada(), correo.getCodigorecuperacion());
             Map<String, String> response = new HashMap<>();
             response.put("message", "Correo enviado");
+            return ResponseEntity.ok(response);
+        }
 
+        @PostMapping("/citaverificacion")
+        public ResponseEntity<?> enviarCorreoVerificacionCita(@RequestBody Correo correo) {
+            envioCorreoService.enviarCorreoVerificacionCita(correo.getDestinatario(), correo.getCodigocita(), correo.getCita());
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Correo enviado");
             return ResponseEntity.ok(response);
         }
     }

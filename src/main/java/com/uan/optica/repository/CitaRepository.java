@@ -14,6 +14,10 @@ import java.util.List;
 public interface CitaRepository extends JpaRepository<Cita, Integer> {
     @Query("SELECT c.hora FROM Cita c WHERE c.fecha LIKE %:fecha%")
     List<String> obtenerHoras(@Param("fecha") String fecha);
+
     @Query("SELECT u FROM Cita u WHERE u.idpaciente = :idpaciente")
-    Cita getCita(@Param("idpaciente") String idpaciente);
+    Cita getCita(@Param("idpaciente") int idpaciente);
+
+    @Query("DELETE FROM Cita c WHERE c.codigo = :codigo")
+    boolean eliminarCitaPorCodigo(@Param("codigo") String codigo);
 }

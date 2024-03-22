@@ -3,10 +3,18 @@ package com.uan.optica.controller;
 import com.uan.optica.entities.Calendario;
 import com.uan.optica.service.CalendarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.core.io.Resource;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -60,6 +68,22 @@ public class CalendarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
+    @GetMapping("/cancelar/{fecha}")
+    public ResponseEntity<?> descargarPDF(@PathVariable("fecha") String fecha) throws IOException {
+        calendarioService.generarPdfCitasPorFecha(fecha);
 
+        File file = new File("citas_" + fecha + ".pdf");
+        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getName());
+
+        // Devolver la respuesta con el archivo PDF como recurso
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+    }
 }
+
+
