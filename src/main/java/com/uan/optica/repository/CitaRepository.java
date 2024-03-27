@@ -18,6 +18,10 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     @Query("SELECT u FROM Cita u WHERE u.idpaciente = :idpaciente")
     Cita getCita(@Param("idpaciente") int idpaciente);
 
-    @Query("DELETE FROM Cita c WHERE c.codigo = :codigo")
-    boolean eliminarCitaPorCodigo(@Param("codigo") String codigo);
+    @Query("SELECT c FROM Cita c WHERE c.codigo = :codigo")
+    Cita findByCodigo(@Param("codigo") String codigo);
+    @Query("SELECT c FROM Cita c WHERE c.fecha = :fecha")
+    List<Cita> obtenerCitasPorFecha(@Param("fecha") String fecha);
+    void deleteById(int id);
+
 }

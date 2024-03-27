@@ -1,6 +1,5 @@
 package com.uan.optica.service.Impl;
 import com.uan.optica.entities.Cita;
-import com.uan.optica.entities.Usuario;
 import com.uan.optica.repository.CitaRepository;
 import com.uan.optica.service.CitaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,38 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
-    public boolean eliminarCita(String codigo) {
-        return citaRepository.eliminarCitaPorCodigo(codigo);
+    public Cita citaCodigo(String codigo) {
+        return citaRepository.findByCodigo(codigo);
     }
+
+    @Override
+    public boolean eliminarCita(String codigo) {
+        try {
+            Cita datos = citaRepository.findByCodigo(codigo);
+
+            if (datos != null){
+                citaRepository.delete(datos);
+                return true; // La cita se eliminó correctamente
+
+            }
+            return false;
+        } catch (Exception e) {
+            // Manejar cualquier excepción que pueda ocurrir durante la eliminación
+            e.printStackTrace(); // Manejo básico de excepciones, imprime la traza de la excepción
+            return false;
+        }
+    }
+    @Override
+    public List<Cita> obtenercitas(String fecha) {
+
+        return citaRepository.obtenerCitasPorFecha(fecha);
+
+    }
+
+    @Override
+    public void eliminar(int cita) {
+        citaRepository.deleteById(cita);
+    }
+
+
 }

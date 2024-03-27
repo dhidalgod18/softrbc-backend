@@ -11,8 +11,6 @@ public interface CalendarioService {
     boolean crearCalendario(Calendario calendario);
     boolean modificarDatosCalendario(int idcalendario, String nuevadiasatencion, int nuevaduracion);
     int duracioncita(String dia);
-    List<Cita> obtenercitas(String fecha);
-    void generarPdfCitasPorFecha(String fecha);
 
 
 

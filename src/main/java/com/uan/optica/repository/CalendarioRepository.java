@@ -16,6 +16,5 @@ public interface CalendarioRepository extends JpaRepository<Calendario, Integer>
     @Query("SELECT c.duracioncita FROM Calendario c WHERE c.diasatencion LIKE %:dia%")
     Integer obtenerDuracionCitaPorDia(@Param("dia") String dia);
 
-    @Query("SELECT c FROM Cita c WHERE c.fecha = :fecha")
-    List<Cita> obtenerCitasPorFecha(@Param("fecha") String fecha);
+
 }

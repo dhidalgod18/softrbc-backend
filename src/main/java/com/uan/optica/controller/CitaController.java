@@ -1,14 +1,19 @@
 package com.uan.optica.controller;
 
 import com.uan.optica.entities.Cita;
-import com.uan.optica.entities.Usuario;
+import com.uan.optica.reportes.CitaExportePdf;
 import com.uan.optica.service.CitaService;
 import com.uan.optica.service.EnvioCorreoService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -60,9 +65,9 @@ public class CitaController {
         }
     }
     @GetMapping("/verificarCodigo")
-    public ResponseEntity<?> verificarCodigo(@RequestParam String idpaciente, @RequestParam String codigo) {
+    public ResponseEntity<?> verificarCodigo(@RequestParam String codigo) {
 
-        Cita cita = citaService.obtenerCitaporIdpaciente(Integer.parseInt(idpaciente));
+        Cita cita = citaService.citaCodigo(codigo);
 
         if (cita == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La cita con el idpaciente proporcionado no existe");
@@ -84,6 +89,27 @@ public class CitaController {
                 return ResponseEntity.ok("La cita fue eliminada correctamente.");
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La cita con el código proporcionado no existe.");
+            }
+        }
+
+        @GetMapping("/export/pdf")
+        public void generarReportePdf(@RequestParam("fecha") String fecha, HttpServletResponse response) throws IOException {
+            response.setContentType("application/pdf");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
+
+            String cabecera = "Content-Disposition";
+            String valor = "attachment; filename=citas"+fecha1+".pdf";
+            response.setHeader(cabecera,valor);
+
+            List<Cita> citas1 = citaService.obtenercitas(fecha);
+            CitaExportePdf exportePdf = new CitaExportePdf(citas1);
+            exportePdf.export(response);
+
+            for (int i= 0; i < citas1.size(); i++) {
+
+                citaService.eliminar(citas1.get(i).getIdcita());
+
             }
         }
 
