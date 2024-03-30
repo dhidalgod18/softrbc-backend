@@ -15,8 +15,10 @@ import lombok.NoArgsConstructor;
 public class Queratometria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int idQueratometria;
-    String od;
-    String oi;
+    private int idQueratometria;
+    private String od;
+    private String oi;
+    private int idhistoriaclinica;
+
 
 }

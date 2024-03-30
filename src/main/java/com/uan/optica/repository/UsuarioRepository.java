@@ -13,8 +13,8 @@ public interface UsuarioRepository  extends JpaRepository<Usuario, Integer> {
     /**
      * Un query personalizado
      */
-    @Query("SELECT u FROM Usuario u WHERE u.correo = :correo")
-    Usuario getUserByUserName(@Param("correo") String correo);
+    @Query("SELECT u FROM Usuario u WHERE u.cedula = :cedula")
+    Usuario getUserByUserName(@Param("cedula") String cedula);
 
     @Query("SELECT u FROM Usuario u WHERE u.rol = :rol")
     List<Usuario> findByRol(@Param("rol") String rol);

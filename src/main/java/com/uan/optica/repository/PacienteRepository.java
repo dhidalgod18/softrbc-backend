@@ -16,4 +16,6 @@ public interface PacienteRepository extends JpaRepository<Paciente, Integer> {
     List<Usuario> findByRol(@Param("rol") String rol);
     @Query("SELECT u FROM Paciente u WHERE u.idusuario = :idusuario")
     Paciente findById(@Param("idusuario") int idusuario);
+    @Query("SELECT u FROM Paciente u WHERE u.idpaciente = :idpaciente")
+    Paciente findPacienteId(@Param("idpaciente") int idpaciente);
 }

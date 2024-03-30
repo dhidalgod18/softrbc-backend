@@ -27,8 +27,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public boolean crearPersona(Usuario usuario) {
         try {
-            String passwordBc = passwordEncoder.encode(usuario.getPassword());
-            usuario.setPassword(passwordBc);
             usuarioRepository.save(usuario);
              return true;
         } catch (Exception e) {

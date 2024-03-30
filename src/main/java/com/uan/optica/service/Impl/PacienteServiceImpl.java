@@ -1,5 +1,6 @@
 package com.uan.optica.service.Impl;
 
+import com.uan.optica.entities.Cita;
 import com.uan.optica.entities.Paciente;
 import com.uan.optica.entities.Usuario;
 import com.uan.optica.repository.PacienteRepository;
@@ -32,6 +33,18 @@ public class PacienteServiceImpl implements PacienteService {
         }
 
         return idpacientlogin;
+    }
+
+    @Override
+    public Paciente obtenerPacienteporId(int idpaciente) {
+        Paciente paciente = pacienteRepository.findPacienteId(idpaciente);
+        if (paciente != null) {
+            System.out.println("Cita encontrado: " + paciente.getIdpaciente()); // Imprime el nombre del usuario encontrado
+        } else {
+            System.out.println("Paciente no encontrado por el idpaciente: " + idpaciente);
+        }
+        return paciente;
+
     }
 
 }

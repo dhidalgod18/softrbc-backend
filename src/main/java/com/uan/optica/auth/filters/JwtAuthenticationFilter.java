@@ -45,6 +45,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         /**Vienen en el cuerpo del request*/
         String correo = null;
         String password = null;
+        Long cedula = null;
 
         try {
             /** el user y password Lo capturamos con
@@ -54,8 +55,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             usuario = new ObjectMapper().readValue(request.getInputStream(),Usuario.class);
             correo = usuario.getCorreo();
             password = usuario.getPassword();
+            cedula = usuario.getCedula();
 
-            logger.info("Username desde request InputStream (raw)"+correo);
+            logger.info("Username desde request InputStream (raw)"+cedula);
             logger.info("Password desde request InputStream (raw)"+password);
 
         } catch (IOException e) {
@@ -63,7 +65,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
         /**Nos autenticamos mediante el user y password
          * */
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(correo,password);
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(cedula,password);
         logger.info("que tare este autenticacion (raw)"+authToken);
 
         Authentication authenticationResult = authenticationManager.authenticate(authToken);
@@ -76,6 +78,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String correo = ((MyUserDetails) authResult.getPrincipal()).getUsername();
         String rol = ((MyUserDetails) authResult.getPrincipal()).getRol();
         String nombre = ((MyUserDetails) authResult.getPrincipal()).getNombre();
+        Long cedula = ((MyUserDetails) authResult.getPrincipal()).getCedula();
         String apellido = ((MyUserDetails) authResult.getPrincipal()).getApellido();
         Long telefono = ((MyUserDetails) authResult.getPrincipal()).getTelefono();
         int idPaciente = ((MyUserDetails) authResult.getPrincipal()).getIdpaciente(); // Obtener el ID del paciente
@@ -109,8 +112,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("apellido", apellido);
         body.put("username", correo);
         body.put("telefono", telefono);
+        body.put("cedula", cedula);
         body.put("idpaciente", idPaciente);
-
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(200);

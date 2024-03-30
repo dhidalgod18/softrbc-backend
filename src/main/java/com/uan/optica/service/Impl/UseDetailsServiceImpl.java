@@ -26,6 +26,13 @@ public class UseDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         /**Verificamos si lo que se acaba de autenticar existe*/
         Usuario user = usuarioRepository.getUserByUserName(username);
+        String pas = user.getPassword();
+
+        boolean n = passwordEncoder.matches("Bogota24*",pas);
+
+        if (n){
+            System.out.println("gemelosssssssssss");
+        }
         if (user == null) {
             throw new UsernameNotFoundException("Usuario no encontrado");
         }

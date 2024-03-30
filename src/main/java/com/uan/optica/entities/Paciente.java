@@ -21,14 +21,13 @@ public class Paciente {
     private LocalDate fechanacimiento;
 
     private String genero;
-    private String nombreacompañante;
 
     private int idusuario;
+    private boolean aceptarterminos;
 
-    public enum GeneroEnum {
-        Masculino,
-        Femenino,
+   private Integer idhistoriaclinica;
 
-    }
+    private String nombreacompañante;
+
 
 }

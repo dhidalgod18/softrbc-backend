@@ -15,18 +15,20 @@ import lombok.NoArgsConstructor;
 public class RxFinal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int idRxFinal;
-    String od;
-    String oi;
-    String avl;
-    String avp;
-    String add;
-    String bif;
-    String uso;
-    String diagnostico;
-    String conducta;
-    String examinador;
-    String color;
-    String control;
+    private int idRxFinal;
+    private String od;
+    private String oi;
+    private String avl;
+    private String avp;
+    private String add;
+    private String bif;
+    private String uso;
+    private String diagnostico;
+    private String conducta;
+    private String examinador;
+    private String color;
+    private String control;
+    private int idhistoriaclinica;
+
 
 }

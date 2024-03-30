@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -51,7 +49,9 @@ public class PacienteController {
             usuario.setCorreo((String) usuarioMap.get("correo"));
             usuario.setDireccion((String) usuarioMap.get("direccion"));
             usuario.setTelefono(Long.parseLong((String) usuarioMap.get("telefono")));
-            usuario.setPassword((String) usuarioMap.get("password"));
+            String pass = (String) usuarioMap.get("password");
+            String passCodi = passwordEncoder.encode(pass);
+            usuario.setPassword(passCodi);
             usuario.setCedula(Long.parseLong((String) usuarioMap.get("cedula")));
             String codigorec = generarCodigoRecuperacion();
             System.out.println(codigorec + "codigo recuperacion que genero");
@@ -72,15 +72,24 @@ public class PacienteController {
             String fechaNacimientoDateOnly = fechaNacimientoStr.substring(0, 10); // Extraer solo la parte de la fecha
             LocalDate fechaNacimiento = LocalDate.parse(fechaNacimientoDateOnly);
             String genero = (String) pacienteMap.get("genero");
-            String nombreAcompañante = (String) pacienteMap.get("nombreacompañante");
             Paciente paciente = new Paciente();
             paciente.setOcupacion(ocupacion);
             paciente.setFechanacimiento(fechaNacimiento);
             paciente.setGenero(genero);
-            paciente.setNombreacompañante(nombreAcompañante);
             paciente.setIdusuario(usuario.getIdusuario());
+            boolean aceptar = (Boolean) pacienteMap.get("aceptarterminos");
+            paciente.setAceptarterminos(aceptar);
+            paciente.setIdhistoriaclinica(null);
+            String acompañante = (String) requestBody.get("nombreacompañante");
+            if (acompañante != null){
+                paciente.setNombreacompañante((String) requestBody.get("nombreacompañante"));
+            }else {
+                paciente.setNombreacompañante(null);
+            }
 
             System.out.println(paciente.toString()+"Paciente");
+
+
 
             pacienteService.crearPaciente(paciente);
 
@@ -94,4 +103,15 @@ public class PacienteController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
+    @GetMapping("/pacienteEncontrado/{idpaciente}")
+    public ResponseEntity<?> pacientePorId(@PathVariable("idpaciente") int idpaciente) {
+        Paciente resultado = pacienteService.obtenerPacienteporId(idpaciente);
+
+        if (resultado != null) {
+            return ResponseEntity.ok(resultado);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontro el paciente");
+        }
+    }
+
 }

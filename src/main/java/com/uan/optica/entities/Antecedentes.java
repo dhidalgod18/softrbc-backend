@@ -15,8 +15,10 @@ import lombok.NoArgsConstructor;
 public class Antecedentes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int idAntecedentes;
-    String familiares;
-    String oculares;
-    String generales;
+    private int idAntecedentes;
+    private String familiares;
+    private String oculares;
+    private String generales;
+    private int idhistoriaclinica;
+
 }

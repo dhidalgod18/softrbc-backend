@@ -11,5 +11,7 @@ import java.util.List;
 public interface PacienteService {
     Paciente crearPaciente(Paciente paciente);
     int obtenerPaciente();
+    Paciente obtenerPacienteporId(int idpaciente);
+
 
 }

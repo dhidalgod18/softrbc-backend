@@ -15,14 +15,16 @@ import lombok.NoArgsConstructor;
 public class Motilidad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int idMotilidad;
-    String ducciones;
-    String versiones;
-    String ppc;
-    String ct6m;
-    String cms;
-    String ojoDominante;
-    String manoDominante;
+    private int idMotilidad;
+    private String ducciones;
+    private String versiones;
+    private String ppc;
+    private String ct6m;
+    private String cms;
+    private String ojoDominante;
+    private String manoDominante;
+    private int idhistoriaclinica;
+
 
 
 }

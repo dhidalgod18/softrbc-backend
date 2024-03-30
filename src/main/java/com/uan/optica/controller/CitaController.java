@@ -35,6 +35,11 @@ public class CitaController {
         }
         return horas;
     }
+    @GetMapping("/listacitas")
+    public List<Cita> listaCitas(@RequestParam String fecha) {
+        List<Cita> listaCitas = citaService.obtenercitas(fecha);
+        return listaCitas;
+    }
 
     @PostMapping("/nueva")
     public ResponseEntity<?> registrarCita(@RequestBody Map<String, Object> requestBody) {
@@ -49,6 +54,7 @@ public class CitaController {
             String codigo = codigoCita();
             cita.setCodigo(codigo);
             cita.setHora((String) requestBody.get("hora"));
+
 
 
 
@@ -106,11 +112,11 @@ public class CitaController {
             CitaExportePdf exportePdf = new CitaExportePdf(citas1);
             exportePdf.export(response);
 
-            for (int i= 0; i < citas1.size(); i++) {
+            /**for (int i= 0; i < citas1.size(); i++) {
 
                 citaService.eliminar(citas1.get(i).getIdcita());
 
-            }
+            }*/
         }
 
 }

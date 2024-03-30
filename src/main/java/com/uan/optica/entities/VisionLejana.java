@@ -15,12 +15,14 @@ import lombok.NoArgsConstructor;
 public class VisionLejana {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int idVisionLejana;
-    String ojoDRX;
-    String ojoIRX;
-    String OD;
-    String OI;
-    String distanciapupilar;
-    String examenExterno;
+    private int idVisionLejana;
+    private String ojoDRX;
+    private String ojoIRX;
+    private String OD;
+    private String OI;
+    private String distanciapupilar;
+    private String examenExterno;
+    private int idhistoriaclinica;
+
 
 }

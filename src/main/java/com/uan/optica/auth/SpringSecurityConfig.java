@@ -37,11 +37,16 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/paciente/nueva").permitAll()
                 .requestMatchers(HttpMethod.POST, "/cita/nueva").permitAll()
                 .requestMatchers(HttpMethod.POST, "/cita/lista").permitAll()
+                .requestMatchers(HttpMethod.GET, "/cita/listacitas").permitAll()
+
                 .requestMatchers(HttpMethod.GET, "/cita/verificarCodigo").permitAll()
                 .requestMatchers(HttpMethod.GET, "/cita/verificarCodigo").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/cita/eliminar/{codigo}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/cita/export/pdf").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/calendario/cancelar/{fecha}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/paciente/pacienteEncontrado/{id}").permitAll()
+                .requestMatchers(HttpMethod.POST, "/HistoriaClinica/nueva").permitAll()
+
 
 
 

@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class rxuso {
+public class RxUso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int idRxuso;
-    String od;
-    String oi;
-    String add;
+    private int idrxuso;
+    private String od;
+    private String oi;
+    private String add;
+    private int idhistoriaclinica;
+
 
 }

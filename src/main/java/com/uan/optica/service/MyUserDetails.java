@@ -49,6 +49,12 @@ public class MyUserDetails implements UserDetails {
     public int getIdpaciente() {
         return idpaciente;
     }
+    public Long getCedula() {
+        return user.getCedula();
+    }
+
+
+
 
 
 
