@@ -1,6 +1,8 @@
 package com.uan.optica.controller;
 
 import com.uan.optica.entities.Calendario;
+import com.uan.optica.entities.CalendarioOptometra;
+import com.uan.optica.entities.UsuarioOptometraDTO;
 import com.uan.optica.service.CalendarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -67,6 +69,21 @@ public class CalendarioController {
             String errorMessage = "Error al intentar obtener duración de cita: " + e.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
+    }
+    @GetMapping("/calendariooptometra")
+    public ResponseEntity<List<CalendarioOptometra>> obtenerDiasCalendarioYOptometra() {
+        try {
+            List<CalendarioOptometra> diasCalendarioOptometra = calendarioService.diasCalendarioLaboral();
+            return ResponseEntity.ok(diasCalendarioOptometra);
+        } catch (Exception e) {
+            String errorMessage = "Error al intentar obtener días del calendario y estado del optometra: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+    @GetMapping("/calendariolista")
+    public ResponseEntity<List<Calendario>> listaCalendarios() {
+        List<Calendario> calendarios = calendarioService.calendariolista()  ;
+        return ResponseEntity.ok(calendarios);
     }
 
 }

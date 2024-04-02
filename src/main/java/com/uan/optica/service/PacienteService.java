@@ -13,5 +13,7 @@ public interface PacienteService {
     int obtenerPaciente();
     Paciente obtenerPacienteporId(int idpaciente);
 
+    boolean guardarPaciente(Paciente paciente);
+
 
 }

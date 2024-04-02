@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Oftalmoscopia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idOftalmoscopia;
+    private int idoftalmoscopia;
     private String od;
     private String oi;
     private int idhistoriaclinica;

@@ -5,7 +5,7 @@ public class PasswordAleatorio {
     private static final String MAYUSCULAS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String MINUSCULAS = "abcdefghijklmnopqrstuvwxyz";
     private static final String NUMEROS = "0123456789";
-    private static final String CARACTERES_ESPECIALES = "!.+*";
+    private static final String CARACTERES_ESPECIALES = "!.*";
 
     private static final String ALL_CHARS = MAYUSCULAS + MINUSCULAS + NUMEROS + CARACTERES_ESPECIALES;
 

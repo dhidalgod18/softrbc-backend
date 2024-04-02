@@ -43,15 +43,15 @@ public class HistoriaClinicaController {
     @PostMapping("/nueva")
     public ResponseEntity<?> guardarHistoriaClinica(@RequestBody Map<String, Object> requestBody) {
         try {
-            HistoriaClinica historiaClinica1 = new HistoriaClinica();
-            HistoriaClinica historiaClinica = historiaClinicaService.crearHistoria(historiaClinica1);
+            Historiaclinica historiaClinica1 = new Historiaclinica();
+            Historiaclinica historiaClinicaGuardada = historiaClinicaService.crearHistoria(historiaClinica1);
 
             // Extraer los datos del usuario del cuerpo de la solicitud
             Map<String, Object> datosMap = (Map<String, Object>) requestBody.get("Anamnesis");
             // Crear un objeto Anamnesis a partir de los datos recibidos
             Anamnesis anamnesis = new Anamnesis();
             anamnesis.setAnamnesis((String) datosMap.get("anamnesis"));
-            anamnesis.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            anamnesis.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
             // Crear el usuario
             anamnesisService.agregarAnamnesis(anamnesis);
             // Extraer el objeto Antecedentes del cuerpo de la solicitud
@@ -60,17 +60,17 @@ public class HistoriaClinicaController {
             antecedentes.setFamiliares((String) antecedentesMap.get("antecedentesFamiliares"));
             antecedentes.setOculares((String) antecedentesMap.get("antecedentesOculares"));
             antecedentes.setGenerales((String) antecedentesMap.get("antecedentesGenerales"));
-            antecedentes.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            antecedentes.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
             // Crear antecedentes
             antecedentesService.agregarAntecedentes(antecedentes);
             // Extraer el objeto RxEnUso del cuerpo de la solicitud
             Map<String, Object> RxusoMap = (Map<String, Object>) requestBody.get("RxUso");
 
             RxUso rxUso = new RxUso();
-            rxUso.setOd((String) RxusoMap.get("od"));
-            rxUso.setOi((String) RxusoMap.get("oi"));
-            rxUso.setAdd((String) RxusoMap.get("add"));
-            rxUso.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            rxUso.setOd((String) RxusoMap.get("rxusood"));
+            rxUso.setOi((String) RxusoMap.get("rxusooi"));
+            rxUso.setAddicion((String) RxusoMap.get("rxusoadd"));
+            rxUso.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
 
             // Crear rxUso
             rxUsoService.agregarRxEnUso(rxUso);
@@ -78,24 +78,24 @@ public class HistoriaClinicaController {
             Map<String, Object> visionLejanaMap = (Map<String, Object>) requestBody.get("VisionLejana");
 
             VisionLejana visionLejana = new VisionLejana();
-            visionLejana.setOjoDRX((String) visionLejanaMap.get("odConRx"));
-            visionLejana.setOjoIRX((String) visionLejanaMap.get("oiConRx"));
-            visionLejana.setOD((String) visionLejanaMap.get("od"));
-            visionLejana.setOI((String) visionLejanaMap.get("oi"));
-            visionLejana.setDistanciapupilar((String) visionLejanaMap.get("distanciaPupilar"));
-            visionLejana.setExamenExterno((String) visionLejanaMap.get("externo"));
-            visionLejana.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            visionLejana.setOjoDRX((String) visionLejanaMap.get("vlejanarxod"));
+            visionLejana.setOjoIRX((String) visionLejanaMap.get("vlejanarxoi"));
+            visionLejana.setOD((String) visionLejanaMap.get("vlejanaod"));
+            visionLejana.setOI((String) visionLejanaMap.get("vlejanaoi"));
+            visionLejana.setDistanciapupilar((String) visionLejanaMap.get("distanciapupilar"));
+            visionLejana.setExamenexterno((String) visionLejanaMap.get("externo"));
+            visionLejana.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
             // Crear visionlejana
             visionLejanaService.agregarVisionLejana(visionLejana);
 
             // Extraer el objeto visionProxima del cuerpo de la solicitud
             Map<String, Object> visionProximaMap = (Map<String, Object>) requestBody.get("visionProxima");
             VisionProxima visionProxima = new VisionProxima();
-            visionProxima.setOjoDRX((String) visionProximaMap.get("odConRx"));
-            visionProxima.setOjoOIRX((String) visionProximaMap.get("oiConRx"));
-            visionProxima.setOD((String) visionProximaMap.get("od"));
-            visionProxima.setOI((String) visionProximaMap.get("oi"));
-            visionProxima.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            visionProxima.setOjodrx((String) visionProximaMap.get("vproximarxod"));
+            visionProxima.setOjooirx((String) visionProximaMap.get("vproximarxoi"));
+            visionProxima.setOd((String) visionProximaMap.get("vproximaod"));
+            visionProxima.setOi((String) visionProximaMap.get("vproximaoi"));
+            visionProxima.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
             // Crear visionproxima
             visionProximaService.agregarVisionProxima(visionProxima);
 
@@ -106,37 +106,38 @@ public class HistoriaClinicaController {
             motilidad.setVersiones((String) motilidadMap.get("versiones"));
             motilidad.setPpc((String) motilidadMap.get("ppc"));
             motilidad.setCt6m((String) motilidadMap.get("ct6m"));
-            motilidad.setCms((String) motilidadMap.get("33cm"));
-            motilidad.setOjoDominante((String) motilidadMap.get("ojodominante"));
-            motilidad.setManoDominante((String) motilidadMap.get("manodominante"));
-            motilidad.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            motilidad.setCms((String) motilidadMap.get("cm"));
+            motilidad.setOjodominante((String) motilidadMap.get("ojodominante"));
+            motilidad.setManodominante((String) motilidadMap.get("manodominante"));
+            motilidad.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
 
             // Crear motilidad
             motilidadService.agregarMotilidad(motilidad);
             // Extraer el objeto oftalmoscopia del cuerpo de la solicitud
             Map<String, Object> oftalmoscopiaMap = (Map<String, Object>) requestBody.get("Oftalmoscopia");
             Oftalmoscopia oftalmoscopia = new Oftalmoscopia();
-            oftalmoscopia.setOd((String) oftalmoscopiaMap.get("od"));
-            oftalmoscopia.setOi((String) oftalmoscopiaMap.get("oi"));
-            oftalmoscopia.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            oftalmoscopia.setOd((String) oftalmoscopiaMap.get("oftalmoscopiaod"));
+            oftalmoscopia.setOi((String) oftalmoscopiaMap.get("oftalmoscopiaoi"));
+            oftalmoscopia.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
 
             // Crear oftalmoscopia
             oftalmoscopiaService.agregarOftalmoscopia(oftalmoscopia);
             // Extraer el objeto queratometria del cuerpo de la solicitud
             Map<String, Object> queratometriaMap = (Map<String, Object>) requestBody.get("Queratometria");
             Queratometria queratometria = new Queratometria();
-            queratometria.setOd((String) queratometriaMap.get("od"));
-            queratometria.setOi((String) queratometriaMap.get("oi"));
-            queratometria.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            queratometria.setOd((String) queratometriaMap.get("queratometriaod"));
+            queratometria.setOi((String) queratometriaMap.get("queratometriaoi"));
+            queratometria.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
 
             // Crear queratometria
             queratometriaService.agregarQueratometria(queratometria);
             // Extraer el objeto retinoscopia del cuerpo de la solicitud
             Map<String, Object> retinoscopiaMap = (Map<String, Object>) requestBody.get("Retinoscopia");
             Retinoscopia retinoscopia = new Retinoscopia();
-            retinoscopia.setOd((String) retinoscopiaMap.get("od"));
-            retinoscopia.setOi((String) retinoscopiaMap.get("oi"));
-            retinoscopia.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            retinoscopia.setOd((String) retinoscopiaMap.get("retinoscopiaod"));
+            retinoscopia.setOi((String) retinoscopiaMap.get("retinoscopiaoi"));
+            retinoscopia.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+
 
             // Crear retinoscopia
             retinoscopiaService.agregarRetinoscopia(retinoscopia);
@@ -144,26 +145,28 @@ public class HistoriaClinicaController {
             Map<String, Object> rxfinalMap = (Map<String, Object>) requestBody.get("RxFinal");
             RxFinal rxFinal = new RxFinal();
 
-            rxFinal.setOd((String) rxfinalMap.get("od"));
-            rxFinal.setOi((String) rxfinalMap.get("oi"));
+            rxFinal.setOd((String) rxfinalMap.get("rxfinalod"));
+            rxFinal.setOi((String) rxfinalMap.get("rxfinaloi"));
             rxFinal.setAvl((String) rxfinalMap.get("avl"));
             rxFinal.setAvp((String) rxfinalMap.get("avp"));
             rxFinal.setColor((String) rxfinalMap.get("color"));
-            rxFinal.setAdd((String) rxfinalMap.get("add"));
+            rxFinal.setAddicion((String) rxfinalMap.get("add"));
             rxFinal.setBif((String) rxfinalMap.get("bif"));
             rxFinal.setUso((String) rxfinalMap.get("uso"));
             rxFinal.setDiagnostico((String) rxfinalMap.get("diagnostico"));
             rxFinal.setConducta((String) rxfinalMap.get("conducta"));
             rxFinal.setExaminador((String) rxfinalMap.get("examinador"));
             rxFinal.setControl((String) rxfinalMap.get("control"));
-            rxFinal.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            rxFinal.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
 
 
             // Crear rxfinal
             rxFinalService.agregarRxFinal(rxFinal);
             Map<String, Object> pacienteMap = (Map<String, Object>) requestBody.get("paciente");
-            Paciente paciente1 = new Paciente();
-            paciente1.setIdhistoriaclinica(historiaClinica.getIdHistoriaCLinica());
+            int idpaciente = (int) pacienteMap.get("idpaciente");
+            Paciente paciente1 = pacienteService.obtenerPacienteporId(idpaciente);
+            paciente1.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            pacienteService.guardarPaciente(paciente1);
 
 
 

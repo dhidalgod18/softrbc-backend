@@ -1,9 +1,6 @@
 package com.uan.optica.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,14 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "visionproxima")
+
 public class VisionProxima {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idVisionProxima;
-    private String ojoDRX;
-    private String ojoOIRX;
-    private String OD;
-    private String OI;
+    private int idvisionproxima;
+    private String ojodrx;
+    private String ojooirx;
+    private String od;
+    private String oi;
     private int idhistoriaclinica;
 
 

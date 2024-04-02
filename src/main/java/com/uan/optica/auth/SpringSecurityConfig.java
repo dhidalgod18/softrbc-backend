@@ -46,6 +46,9 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/calendario/cancelar/{fecha}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/paciente/pacienteEncontrado/{id}").permitAll()
                 .requestMatchers(HttpMethod.POST, "/HistoriaClinica/nueva").permitAll()
+                .requestMatchers(HttpMethod.GET, "/calendario/calendariooptometra").permitAll()
+                .requestMatchers(HttpMethod.GET, "/calendario/calendariolista").permitAll()
+
 
 
 

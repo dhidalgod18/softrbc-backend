@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Antecedentes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idAntecedentes;
+    private int idantecedentes;
     private String familiares;
     private String oculares;
     private String generales;

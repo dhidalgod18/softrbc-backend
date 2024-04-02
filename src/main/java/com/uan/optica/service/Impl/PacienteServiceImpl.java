@@ -47,4 +47,17 @@ public class PacienteServiceImpl implements PacienteService {
 
     }
 
+    @Override
+    public boolean guardarPaciente(Paciente paciente) {
+        try {
+            pacienteRepository.save(paciente);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
 }

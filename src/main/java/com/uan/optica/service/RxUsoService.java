@@ -1,8 +1,9 @@
 package com.uan.optica.service;
 
+import com.uan.optica.entities.RxUso;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface RxUsoService {
-    void agregarRxEnUso(com.uan.optica.entities.RxUso rxUso);
+    void agregarRxEnUso(RxUso rxUso);
 }

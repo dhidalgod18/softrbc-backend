@@ -1,9 +1,6 @@
 package com.uan.optica.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,15 +9,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "rxfinal")
+
 public class RxFinal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idRxFinal;
+    private int idrxfinal;
     private String od;
     private String oi;
     private String avl;
     private String avp;
-    private String add;
+    private String addicion;
     private String bif;
     private String uso;
     private String diagnostico;

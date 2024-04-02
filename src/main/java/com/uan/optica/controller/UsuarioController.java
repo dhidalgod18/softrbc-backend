@@ -168,10 +168,10 @@ public class UsuarioController {
 
     @PutMapping("/actualizarContrasena")
     public ResponseEntity<?> actualizarContraseña(@RequestBody Map<String, Object> requestBody) {
-        String correo = (String) requestBody.get("correo");
+        String cedula = (String) requestBody.get("cedula");
         String nuevaContraseña = (String) requestBody.get("nuevacontrasena");
         // Buscar en la base de datos el usuario con el correo proporcionado
-        Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(correo);
+        Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(cedula);
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario con el correo proporcionado no existe");
         }

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class Queratometria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idQueratometria;
+    private int idqueratometria;
     private String od;
     private String oi;
     private int idhistoriaclinica;

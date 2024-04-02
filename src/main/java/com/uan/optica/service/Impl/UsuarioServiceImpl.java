@@ -90,12 +90,12 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public Usuario obtenerUsuarioPorCorreo(String correo) {
-        Usuario usuario = usuarioRepository.getUserByUserName(correo);
+    public Usuario obtenerUsuarioPorCorreo(String cedula) {
+        Usuario usuario = usuarioRepository.getUserByUserName(cedula);
         if (usuario != null) {
             System.out.println("Usuario encontrado: " + usuario.getNombre()); // Imprime el nombre del usuario encontrado
         } else {
-            System.out.println("Usuario no encontrado para el correo: " + correo);
+            System.out.println("Usuario no encontrado para el cedula: " + cedula);
         }
         return usuario;
     }
