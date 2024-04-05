@@ -43,15 +43,15 @@ public class HistoriaClinicaController {
     @PostMapping("/nueva")
     public ResponseEntity<?> guardarHistoriaClinica(@RequestBody Map<String, Object> requestBody) {
         try {
-            Historiaclinica historiaClinica1 = new Historiaclinica();
-            Historiaclinica historiaClinicaGuardada = historiaClinicaService.crearHistoria(historiaClinica1);
+            int idhistoriaClinica = (int) requestBody.get("idhistoriaclinica");
+
 
             // Extraer los datos del usuario del cuerpo de la solicitud
             Map<String, Object> datosMap = (Map<String, Object>) requestBody.get("Anamnesis");
             // Crear un objeto Anamnesis a partir de los datos recibidos
             Anamnesis anamnesis = new Anamnesis();
             anamnesis.setAnamnesis((String) datosMap.get("anamnesis"));
-            anamnesis.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            anamnesis.setIdhistoriaclinica(idhistoriaClinica);
             // Crear el usuario
             anamnesisService.agregarAnamnesis(anamnesis);
             // Extraer el objeto Antecedentes del cuerpo de la solicitud
@@ -60,7 +60,7 @@ public class HistoriaClinicaController {
             antecedentes.setFamiliares((String) antecedentesMap.get("antecedentesFamiliares"));
             antecedentes.setOculares((String) antecedentesMap.get("antecedentesOculares"));
             antecedentes.setGenerales((String) antecedentesMap.get("antecedentesGenerales"));
-            antecedentes.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            antecedentes.setIdhistoriaclinica(idhistoriaClinica);
             // Crear antecedentes
             antecedentesService.agregarAntecedentes(antecedentes);
             // Extraer el objeto RxEnUso del cuerpo de la solicitud
@@ -70,7 +70,7 @@ public class HistoriaClinicaController {
             rxUso.setOd((String) RxusoMap.get("rxusood"));
             rxUso.setOi((String) RxusoMap.get("rxusooi"));
             rxUso.setAddicion((String) RxusoMap.get("rxusoadd"));
-            rxUso.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            rxUso.setIdhistoriaclinica(idhistoriaClinica);
 
             // Crear rxUso
             rxUsoService.agregarRxEnUso(rxUso);
@@ -84,7 +84,7 @@ public class HistoriaClinicaController {
             visionLejana.setOI((String) visionLejanaMap.get("vlejanaoi"));
             visionLejana.setDistanciapupilar((String) visionLejanaMap.get("distanciapupilar"));
             visionLejana.setExamenexterno((String) visionLejanaMap.get("externo"));
-            visionLejana.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            visionLejana.setIdhistoriaclinica(idhistoriaClinica);
             // Crear visionlejana
             visionLejanaService.agregarVisionLejana(visionLejana);
 
@@ -95,7 +95,7 @@ public class HistoriaClinicaController {
             visionProxima.setOjooirx((String) visionProximaMap.get("vproximarxoi"));
             visionProxima.setOd((String) visionProximaMap.get("vproximaod"));
             visionProxima.setOi((String) visionProximaMap.get("vproximaoi"));
-            visionProxima.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            visionProxima.setIdhistoriaclinica(idhistoriaClinica);
             // Crear visionproxima
             visionProximaService.agregarVisionProxima(visionProxima);
 
@@ -109,7 +109,7 @@ public class HistoriaClinicaController {
             motilidad.setCms((String) motilidadMap.get("cm"));
             motilidad.setOjodominante((String) motilidadMap.get("ojodominante"));
             motilidad.setManodominante((String) motilidadMap.get("manodominante"));
-            motilidad.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            motilidad.setIdhistoriaclinica(idhistoriaClinica);
 
             // Crear motilidad
             motilidadService.agregarMotilidad(motilidad);
@@ -118,7 +118,7 @@ public class HistoriaClinicaController {
             Oftalmoscopia oftalmoscopia = new Oftalmoscopia();
             oftalmoscopia.setOd((String) oftalmoscopiaMap.get("oftalmoscopiaod"));
             oftalmoscopia.setOi((String) oftalmoscopiaMap.get("oftalmoscopiaoi"));
-            oftalmoscopia.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            oftalmoscopia.setIdhistoriaclinica(idhistoriaClinica);
 
             // Crear oftalmoscopia
             oftalmoscopiaService.agregarOftalmoscopia(oftalmoscopia);
@@ -127,7 +127,7 @@ public class HistoriaClinicaController {
             Queratometria queratometria = new Queratometria();
             queratometria.setOd((String) queratometriaMap.get("queratometriaod"));
             queratometria.setOi((String) queratometriaMap.get("queratometriaoi"));
-            queratometria.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            queratometria.setIdhistoriaclinica(idhistoriaClinica);
 
             // Crear queratometria
             queratometriaService.agregarQueratometria(queratometria);
@@ -136,7 +136,7 @@ public class HistoriaClinicaController {
             Retinoscopia retinoscopia = new Retinoscopia();
             retinoscopia.setOd((String) retinoscopiaMap.get("retinoscopiaod"));
             retinoscopia.setOi((String) retinoscopiaMap.get("retinoscopiaoi"));
-            retinoscopia.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            retinoscopia.setIdhistoriaclinica(idhistoriaClinica);
 
 
             // Crear retinoscopia
@@ -157,7 +157,7 @@ public class HistoriaClinicaController {
             rxFinal.setConducta((String) rxfinalMap.get("conducta"));
             rxFinal.setExaminador((String) rxfinalMap.get("examinador"));
             rxFinal.setControl((String) rxfinalMap.get("control"));
-            rxFinal.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            rxFinal.setIdhistoriaclinica(idhistoriaClinica);
 
 
             // Crear rxfinal
@@ -165,7 +165,7 @@ public class HistoriaClinicaController {
             Map<String, Object> pacienteMap = (Map<String, Object>) requestBody.get("paciente");
             int idpaciente = (int) pacienteMap.get("idpaciente");
             Paciente paciente1 = pacienteService.obtenerPacienteporId(idpaciente);
-            paciente1.setIdhistoriaclinica(historiaClinicaGuardada.getIdhistoriaclinica());
+            paciente1.setIdhistoriaclinica(idhistoriaClinica);
             pacienteService.guardarPaciente(paciente1);
 
 
@@ -190,6 +190,19 @@ public class HistoriaClinicaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontro la formula");
         }
     }
+    @PostMapping("/crearhistoria")
+    public ResponseEntity<?> formulaclinica() {
+        Historiaclinica historiaClinica1 = new Historiaclinica();
+        Historiaclinica historiaClinicaGuardada = historiaClinicaService.crearHistoria(historiaClinica1);
+
+        if (historiaClinicaGuardada != null) {
+            return ResponseEntity.ok(historiaClinicaGuardada);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontro la historia clinica");
+        }
+    }
+
+
 
 
 }

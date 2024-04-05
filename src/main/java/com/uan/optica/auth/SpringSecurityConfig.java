@@ -48,6 +48,9 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/HistoriaClinica/nueva").permitAll()
                 .requestMatchers(HttpMethod.GET, "/calendario/calendariooptometra").permitAll()
                 .requestMatchers(HttpMethod.GET, "/calendario/calendariolista").permitAll()
+                .requestMatchers(HttpMethod.GET, "/paciente/listausuariopaciente").permitAll()
+                .requestMatchers(HttpMethod.POST, "/HistoriaClinica/crearhistoria").permitAll()
+
 
 
 

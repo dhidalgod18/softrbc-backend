@@ -1,8 +1,6 @@
 package com.uan.optica.service.Impl;
 
-import com.uan.optica.entities.Cita;
-import com.uan.optica.entities.Paciente;
-import com.uan.optica.entities.Usuario;
+import com.uan.optica.entities.*;
 import com.uan.optica.repository.PacienteRepository;
 import com.uan.optica.service.PacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +55,23 @@ public class PacienteServiceImpl implements PacienteService {
             return false;
         }
     }
+
+    @Override
+    public List<UsuarioPacienteDTO> obtenerUsuariosPacienteDTO(int id) {
+        Usuario usuarios = pacienteRepository.findByUsuarioIdp(id);
+        List<UsuarioPacienteDTO> usuarioPacienteDTO = new ArrayList<>();
+
+        if (usuarios != null) {
+            Paciente paciente = pacienteRepository.findByUsuarioId(id);
+            if (paciente != null) {
+                usuarioPacienteDTO.add(new UsuarioPacienteDTO(usuarios,paciente));
+            }
+        }
+
+        return usuarioPacienteDTO;
+
+    }
+
 
 
 

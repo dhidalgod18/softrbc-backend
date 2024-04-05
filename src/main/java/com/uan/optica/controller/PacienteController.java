@@ -2,6 +2,8 @@ package com.uan.optica.controller;
 
 import com.uan.optica.entities.Paciente;
 import com.uan.optica.entities.Usuario;
+import com.uan.optica.entities.UsuarioOptometraDTO;
+import com.uan.optica.entities.UsuarioPacienteDTO;
 import com.uan.optica.service.EnvioCorreoService;
 import com.uan.optica.service.PacienteService;
 import com.uan.optica.service.UsuarioService;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 
 import static com.uan.optica.filtros.CodigoRecuperacion.generarCodigoRecuperacion;
@@ -104,14 +107,12 @@ public class PacienteController {
         }
     }
     @GetMapping("/pacienteEncontrado/{idpaciente}")
-    public ResponseEntity<?> pacientePorId(@PathVariable("idpaciente") int idpaciente) {
-        Paciente resultado = pacienteService.obtenerPacienteporId(idpaciente);
+    public ResponseEntity<List<UsuarioPacienteDTO>>pacientePorId(@PathVariable("idpaciente") int idpaciente) {
+        Paciente paciente = pacienteService.obtenerPacienteporId(idpaciente);
+        List<UsuarioPacienteDTO> usuarioPacienteDTOS =pacienteService.obtenerUsuariosPacienteDTO(paciente.getIdusuario());
+        return ResponseEntity.ok(usuarioPacienteDTOS);
 
-        if (resultado != null) {
-            return ResponseEntity.ok(resultado);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontro el paciente");
-        }
     }
+
 
 }
