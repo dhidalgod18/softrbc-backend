@@ -24,5 +24,6 @@ public class Cita {
     private int idpaciente;
     private String codigo;
     private String hora;
+    private boolean estado;
 
 }

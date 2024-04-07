@@ -19,7 +19,7 @@ public class Auditoria {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int idauditoria;
-    LocalDate fecha;
+    String fecha;
     String accion;
     int idusuario;
     String informacion;

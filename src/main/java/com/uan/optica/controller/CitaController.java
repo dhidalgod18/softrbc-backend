@@ -54,6 +54,7 @@ public class CitaController {
             String codigo = codigoCita();
             cita.setCodigo(codigo);
             cita.setHora((String) requestBody.get("hora"));
+            cita.setEstado(true);
 
 
 
@@ -112,11 +113,9 @@ public class CitaController {
             CitaExportePdf exportePdf = new CitaExportePdf(citas1);
             exportePdf.export(response);
 
-            /**for (int i= 0; i < citas1.size(); i++) {
-
-                citaService.eliminar(citas1.get(i).getIdcita());
-
-            }*/
+            for (int i= 0; i < citas1.size(); i++) {
+                citas1.get(i).setEstado(false);
+            }
         }
 
 }

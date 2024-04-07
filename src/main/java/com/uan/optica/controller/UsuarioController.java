@@ -141,6 +141,7 @@ public class UsuarioController {
 
         if (resultado) {
             return ResponseEntity.ok("El estado del optometra ha sido cambiado exitosamente");
+
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo cambiar el estado del optometra");
         }
