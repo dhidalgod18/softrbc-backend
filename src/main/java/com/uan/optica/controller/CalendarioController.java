@@ -1,21 +1,12 @@
 package com.uan.optica.controller;
 
 import com.uan.optica.entities.Calendario;
-import com.uan.optica.entities.CalendarioOptometra;
-import com.uan.optica.entities.UsuarioOptometraDTO;
 import com.uan.optica.service.CalendarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.core.io.Resource;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -71,9 +62,9 @@ public class CalendarioController {
         }
     }
     @GetMapping("/calendariooptometra")
-    public ResponseEntity<List<CalendarioOptometra>> obtenerDiasCalendarioYOptometra() {
+    public ResponseEntity<List<String>> obtenerDiasCalendarioYOptometra() {
         try {
-            List<CalendarioOptometra> diasCalendarioOptometra = calendarioService.diasCalendarioLaboral();
+            List<String> diasCalendarioOptometra = calendarioService.diasCalendarioLaboral();
             return ResponseEntity.ok(diasCalendarioOptometra);
         } catch (Exception e) {
             String errorMessage = "Error al intentar obtener días del calendario y estado del optometra: " + e.getMessage();

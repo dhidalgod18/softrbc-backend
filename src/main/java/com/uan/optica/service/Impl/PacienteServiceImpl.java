@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PacienteServiceImpl implements PacienteService {
@@ -72,7 +73,38 @@ public class PacienteServiceImpl implements PacienteService {
 
     }
 
+    @Override
+    public boolean modificarDatosOptometra(UsuarioPacienteDTO pacienteDTO) {
+        try {
+            Usuario usuario = pacienteDTO.getUsuario();
+            Paciente paciente = pacienteDTO.getPaciente();
+            // Verificar si el paciente existe
+            if (paciente == null) {
+                return false;
+            }
 
 
+            // Modificar los datos del usuario
+            usuario.setNombre(usuario.getNombre());
+            usuario.setApellido(usuario.getApellido());
+            usuario.setCorreo(usuario.getCorreo());
+            usuario.setDireccion(usuario.getDireccion());
+            usuario.setTelefono(usuario.getTelefono());
+            usuario.setCedula(usuario.getCedula());
+
+            // Modificar los datos específicos del paciente
+            paciente.setOcupacion(paciente.getOcupacion());
+            paciente.setFechanacimiento(paciente.getFechanacimiento());
+            paciente.setGenero(paciente.getGenero());
+
+            // Guardar los cambios en la base de datos
+            pacienteRepository.save(paciente);
+
+            return true; // La modificación fue exitosa
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // Ocurrió un error durante la modificación
+        }
+    }
 
 }

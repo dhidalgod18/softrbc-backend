@@ -112,6 +112,23 @@ public class PacienteController {
         return ResponseEntity.ok(usuarioPacienteDTOS);
 
     }
+    @PutMapping("/actualizar")
+    public ResponseEntity<?> actualizarPaciente(@RequestBody UsuarioPacienteDTO pacienteDTO) {
+        try {
+
+            // Modificar los datos del paciente
+            boolean resultado = pacienteService.modificarDatosOptometra(pacienteDTO);
+
+            if (resultado) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar los datos del paciente");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al procesar la solicitud");
+        }
+    }
 
 
 }

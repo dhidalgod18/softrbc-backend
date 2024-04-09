@@ -32,22 +32,22 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/preguntas/nueva").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/preguntas/modificar/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/preguntas/eliminar/{id}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/preguntas/listaPreguntas").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/preguntas/listaPreguntas").permitAll()
                 .requestMatchers(HttpMethod.GET, "/calendario/duracioncita/{dia}").hasRole("PACIENTE")
                 .requestMatchers(HttpMethod.POST, "/paciente/nueva").permitAll()
                 .requestMatchers(HttpMethod.POST, "/cita/nueva").hasRole("PACIENTE")
                 .requestMatchers(HttpMethod.POST, "/cita/lista").hasRole("PACIENTE")
-                .requestMatchers(HttpMethod.GET, "/cita/listacitas").hasRole("PACIENTE")
-
+                .requestMatchers(HttpMethod.GET, "/cita/listacitas").hasAnyRole("PACIENTE","OPTOMETRA")
                 .requestMatchers(HttpMethod.GET, "/cita/verificarCodigo").hasRole("PACIENTE")
                 .requestMatchers(HttpMethod.DELETE, "/cita/eliminar/{codigo}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/cita/export/pdf").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/calendario/cancelar/{fecha}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/paciente/pacienteEncontrado/{id}").hasRole("OPTOMETRA")
                 .requestMatchers(HttpMethod.POST, "/HistoriaClinica/nueva").hasRole("OPTOMETRA")
-                .requestMatchers(HttpMethod.GET, "/calendario/calendariooptometra").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/calendario/calendariooptometra").hasRole("PACIENTE")
                 .requestMatchers(HttpMethod.GET, "/calendario/calendariolista").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/HistoriaClinica/crearhistoria").hasRole("OPTOMETRA")
+                .requestMatchers(HttpMethod.PUT, "/paciente/actualizar").hasRole("OPTOMETRA")
 
 
 

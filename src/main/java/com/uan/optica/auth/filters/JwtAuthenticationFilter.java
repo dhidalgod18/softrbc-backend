@@ -95,6 +95,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             claims.put("isOptometra", true);
         } else if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_PACIENTE"))) {
             claims.put("isPaciente", true);
+            claims.put("idpaciente", idPaciente);
+
 
         }
         String token = Jwts.builder()
@@ -113,7 +115,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         body.put("username", correo);
         body.put("telefono", telefono);
         body.put("cedula", cedula);
-        body.put("idpaciente", idPaciente);
 
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(200);

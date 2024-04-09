@@ -1,7 +1,6 @@
 package com.uan.optica.service.Impl;
 
 import com.uan.optica.entities.Calendario;
-import com.uan.optica.entities.CalendarioOptometra;
 import com.uan.optica.entities.Optometra;
 import com.uan.optica.repository.CalendarioRepository;
 import com.uan.optica.service.CalendarioService;
@@ -63,19 +62,18 @@ public class CalendarioServiceImpl implements CalendarioService {
     }
 
     @Override
-    public List<CalendarioOptometra> diasCalendarioLaboral() {
+    public List<String> diasCalendarioLaboral() {
         List<Calendario> calendarios = calendarioRepository.findAll();
-        List<CalendarioOptometra> listaCalendarioOptometraEstado = new ArrayList<>();
+        List<String> diasLaborales = new ArrayList<>();
 
         for (Calendario calendario : calendarios) {
             Optometra optometra = calendarioRepository.findByUsuarioId(calendario.getIdoptometra());
-            if (optometra != null) {
-                CalendarioOptometra calendarioOptometraEstado = new CalendarioOptometra(calendario.getDiasatencion(), optometra.isActivo());
-                listaCalendarioOptometraEstado.add(calendarioOptometraEstado);
+            if (optometra != null && optometra.isActivo()) {
+                diasLaborales.add(calendario.getDiasatencion());
             }
         }
 
-        return listaCalendarioOptometraEstado;
+        return diasLaborales;
     }
 
     @Override

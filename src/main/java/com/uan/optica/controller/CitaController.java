@@ -106,8 +106,8 @@ public class CitaController {
             String fecha1 = dateFormat.format(new Date());
 
             String cabecera = "Content-Disposition";
-            String valor = "attachment; filename=citas"+fecha1+".pdf";
-            response.setHeader(cabecera,valor);
+            String valor = "inline; filename=citas" + fecha1 + ".pdf";
+            response.setHeader(cabecera, valor);
 
             List<Cita> citas1 = citaService.obtenercitas(fecha);
             CitaExportePdf exportePdf = new CitaExportePdf(citas1);
