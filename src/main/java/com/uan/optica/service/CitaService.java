@@ -19,6 +19,6 @@ public interface CitaService {
     List<Cita> obtenercitas(String fecha);
 
     void eliminar(int cita);
-
+    Cita actualizarCita(Cita cita);
 
 }

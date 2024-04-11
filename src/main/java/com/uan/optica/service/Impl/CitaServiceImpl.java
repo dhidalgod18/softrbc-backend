@@ -5,6 +5,7 @@ import com.uan.optica.service.CitaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,30 +41,48 @@ public class CitaServiceImpl implements CitaService {
     @Override
     public boolean eliminarCita(String codigo) {
         try {
-            Cita datos = citaRepository.findByCodigo(codigo);
+            Cita cita = citaRepository.findByCodigo(codigo);
 
-            if (datos != null){
-                citaRepository.delete(datos);
-                return true; // La cita se eliminó correctamente
-
+            if (cita != null) {
+                cita.setEstado(false);
+                citaRepository.save(cita);
+                return true;
+            } else {
+                return false;
             }
-            return false;
         } catch (Exception e) {
-            // Manejar cualquier excepción que pueda ocurrir durante la eliminación
-            e.printStackTrace(); // Manejo básico de excepciones, imprime la traza de la excepción
+
+            e.printStackTrace();
             return false;
         }
     }
     @Override
     public List<Cita> obtenercitas(String fecha) {
+        List<Cita> citas = citaRepository.obtenerCitasPorFecha(fecha);
 
-        return citaRepository.obtenerCitasPorFecha(fecha);
+        List<Cita> citasActivas = new ArrayList<>();
+        for (Cita cita : citas) {
+            if (cita.isEstado()) {
+                citasActivas.add(cita);
+            }
+        }
 
+        return citasActivas;
     }
 
     @Override
     public void eliminar(int cita) {
         citaRepository.deleteById(cita);
+    }
+
+    public Cita actualizarCita(Cita cita) {
+        try {
+            return citaRepository.save(cita);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

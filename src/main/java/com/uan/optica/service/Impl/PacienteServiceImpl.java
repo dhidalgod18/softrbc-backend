@@ -2,6 +2,7 @@ package com.uan.optica.service.Impl;
 
 import com.uan.optica.entities.*;
 import com.uan.optica.repository.PacienteRepository;
+import com.uan.optica.repository.UsuarioRepository;
 import com.uan.optica.service.PacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ import java.util.Optional;
 public class PacienteServiceImpl implements PacienteService {
     @Autowired
     private PacienteRepository pacienteRepository;
+    @Autowired
+
+    private UsuarioRepository usuarioRepository;
     @Override
     public Paciente crearPaciente(Paciente paciente) {
         return pacienteRepository.save(paciente);
@@ -76,8 +80,13 @@ public class PacienteServiceImpl implements PacienteService {
     @Override
     public boolean modificarDatosOptometra(UsuarioPacienteDTO pacienteDTO) {
         try {
+
             Usuario usuario = pacienteDTO.getUsuario();
             Paciente paciente = pacienteDTO.getPaciente();
+            Usuario usuarioDB = pacienteRepository.findByUsuarioIdp(usuario.getIdusuario());
+            //traer base de datos
+            Paciente pacienteBD = pacienteRepository.findPacienteId(paciente.getIdpaciente());
+
             // Verificar si el paciente existe
             if (paciente == null) {
                 return false;
@@ -85,20 +94,23 @@ public class PacienteServiceImpl implements PacienteService {
 
 
             // Modificar los datos del usuario
-            usuario.setNombre(usuario.getNombre());
-            usuario.setApellido(usuario.getApellido());
-            usuario.setCorreo(usuario.getCorreo());
-            usuario.setDireccion(usuario.getDireccion());
-            usuario.setTelefono(usuario.getTelefono());
-            usuario.setCedula(usuario.getCedula());
+            usuarioDB.setNombre(usuario.getNombre());
+            usuarioDB.setApellido(usuario.getApellido());
+            usuarioDB.setCorreo(usuario.getCorreo());
+            usuarioDB.setDireccion(usuario.getDireccion());
+            usuarioDB.setTelefono(usuario.getTelefono());
+            usuarioDB.setCedula(usuario.getCedula());
+
 
             // Modificar los datos específicos del paciente
-            paciente.setOcupacion(paciente.getOcupacion());
-            paciente.setFechanacimiento(paciente.getFechanacimiento());
-            paciente.setGenero(paciente.getGenero());
+            pacienteBD.setOcupacion(paciente.getOcupacion());
+            pacienteBD.setFechanacimiento(paciente.getFechanacimiento());
+            pacienteBD.setGenero(paciente.getGenero());
 
             // Guardar los cambios en la base de datos
-            pacienteRepository.save(paciente);
+            pacienteRepository.save(pacienteBD);
+            usuarioRepository.save(usuarioDB);
+
 
             return true; // La modificación fue exitosa
         } catch (Exception e) {

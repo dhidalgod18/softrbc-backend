@@ -114,7 +114,11 @@ public class CitaController {
             exportePdf.export(response);
 
             for (int i= 0; i < citas1.size(); i++) {
-                citas1.get(i).setEstado(false);
+
+                Cita cita = citas1.get(i);
+                cita.setEstado(false);
+
+                citaService.actualizarCita(cita);
             }
         }
 
