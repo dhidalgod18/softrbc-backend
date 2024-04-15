@@ -28,6 +28,8 @@ public class RxFinal {
     private String color;
     private String control;
     private int idhistoriaclinica;
+    private String  observaciones;
+    String fecha;
 
 
 }

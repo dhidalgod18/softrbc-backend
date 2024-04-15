@@ -19,6 +19,10 @@ public interface UsuarioService {
     Usuario obtenerUsuarioPorCorreo(String correo);
     boolean actualizarContraseña(int idUsuario, String nuevaContraseña);
 
+    Usuario obtenerUsuarioCedula(Long cedula);
+    int obtenerAdmin();
+
+
 
 
 

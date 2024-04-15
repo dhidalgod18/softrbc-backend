@@ -1,6 +1,7 @@
 package com.uan.optica.service.Impl;
 
 import com.uan.optica.entities.Optometra;
+import com.uan.optica.entities.Paciente;
 import com.uan.optica.entities.Usuario;
 import com.uan.optica.entities.UsuarioOptometraDTO;
 import com.uan.optica.repository.OptometraRepository;
@@ -117,5 +118,24 @@ public class UsuarioServiceImpl implements UsuarioService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public Usuario obtenerUsuarioCedula(Long cedula) {
+        return usuarioRepository.findByUsuarioIdp(cedula);
+    }
+
+    @Override
+    public int obtenerAdmin() {
+        List<Usuario> usuarios = usuarioRepository.findByRol("ROLE_ADMIN");
+        int idadmin = 0;
+
+            if (usuarios != null) {
+                idadmin = usuarios.get(0).getIdusuario();
+
+        }
+
+        return idadmin;
+
     }
 }

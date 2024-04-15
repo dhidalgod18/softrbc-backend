@@ -24,6 +24,7 @@ public class Motilidad {
     private String ojodominante;
     private String manodominante;
     private int idhistoriaclinica;
+    String fecha;
 
 
 

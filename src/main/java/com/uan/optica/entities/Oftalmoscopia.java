@@ -19,6 +19,7 @@ public class Oftalmoscopia {
     private String od;
     private String oi;
     private int idhistoriaclinica;
+    String fecha;
 
 
 }

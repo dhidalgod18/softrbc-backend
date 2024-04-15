@@ -12,6 +12,7 @@ public interface CitaService {
     Cita obtenerCitaporIdpaciente(int idpaciente);
 
     Cita citaCodigo(String codigo);
+    Cita citaid(int idcita);
 
 
     boolean eliminarCita(String codigo);

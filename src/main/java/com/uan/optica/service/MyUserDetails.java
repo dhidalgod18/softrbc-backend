@@ -14,6 +14,10 @@ import java.util.Collection;
 public class MyUserDetails implements UserDetails {
     private Usuario user;
     private int idpaciente;
+    private int idoptometra;
+
+    private  int idadmin;
+
 
     /**Obtener los roles de un usuario*/
     @Override
@@ -49,6 +53,14 @@ public class MyUserDetails implements UserDetails {
     public int getIdpaciente() {
         return idpaciente;
     }
+    public int getIdoptometra() {
+        return idoptometra;
+    }
+    public int getIdadmin() {
+        return idadmin;
+    }
+
+
     public Long getCedula() {
         return user.getCedula();
     }

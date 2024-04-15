@@ -39,6 +39,11 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
+    public Cita citaid(int idcita) {
+        return citaRepository.cita(idcita);
+    }
+
+    @Override
     public boolean eliminarCita(String codigo) {
         try {
             Cita cita = citaRepository.findByCodigo(codigo);

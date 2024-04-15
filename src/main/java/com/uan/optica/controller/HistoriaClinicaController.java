@@ -1,12 +1,21 @@
 package com.uan.optica.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uan.optica.entities.*;
+import com.uan.optica.reportes.CitaExportePdf;
+import com.uan.optica.reportes.FormulaClinicaPdf;
 import com.uan.optica.service.*;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,12 +48,19 @@ public class HistoriaClinicaController {
     RetinoscopiaService retinoscopiaService;
     @Autowired
     PacienteService pacienteService;
+    @Autowired
+    AuditoriaServices auditoriaServices;
+    @Autowired
+    UsuarioService usuarioService;
+    @Autowired
+    CitaService citaService;
 
     @PostMapping("/nueva")
     public ResponseEntity<?> guardarHistoriaClinica(@RequestBody Map<String, Object> requestBody) {
         try {
             int idhistoriaClinica = (int) requestBody.get("idhistoriaclinica");
-
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
 
             // Extraer los datos del usuario del cuerpo de la solicitud
             Map<String, Object> datosMap = (Map<String, Object>) requestBody.get("Anamnesis");
@@ -52,6 +68,7 @@ public class HistoriaClinicaController {
             Anamnesis anamnesis = new Anamnesis();
             anamnesis.setAnamnesis((String) datosMap.get("anamnesis"));
             anamnesis.setIdhistoriaclinica(idhistoriaClinica);
+            anamnesis.setFecha(fecha1);
             // Crear el usuario
             anamnesisService.agregarAnamnesis(anamnesis);
             // Extraer el objeto Antecedentes del cuerpo de la solicitud
@@ -61,6 +78,8 @@ public class HistoriaClinicaController {
             antecedentes.setOculares((String) antecedentesMap.get("antecedentesOculares"));
             antecedentes.setGenerales((String) antecedentesMap.get("antecedentesGenerales"));
             antecedentes.setIdhistoriaclinica(idhistoriaClinica);
+            antecedentes.setFecha(fecha1);
+
             // Crear antecedentes
             antecedentesService.agregarAntecedentes(antecedentes);
             // Extraer el objeto RxEnUso del cuerpo de la solicitud
@@ -71,6 +90,9 @@ public class HistoriaClinicaController {
             rxUso.setOi((String) RxusoMap.get("rxusooi"));
             rxUso.setAddicion((String) RxusoMap.get("rxusoadd"));
             rxUso.setIdhistoriaclinica(idhistoriaClinica);
+            rxUso.setFecha(fecha1);
+
+
 
             // Crear rxUso
             rxUsoService.agregarRxEnUso(rxUso);
@@ -85,6 +107,8 @@ public class HistoriaClinicaController {
             visionLejana.setDistanciapupilar((String) visionLejanaMap.get("distanciapupilar"));
             visionLejana.setExamenexterno((String) visionLejanaMap.get("externo"));
             visionLejana.setIdhistoriaclinica(idhistoriaClinica);
+            visionLejana.setFecha(fecha1);
+
             // Crear visionlejana
             visionLejanaService.agregarVisionLejana(visionLejana);
 
@@ -96,6 +120,8 @@ public class HistoriaClinicaController {
             visionProxima.setOd((String) visionProximaMap.get("vproximaod"));
             visionProxima.setOi((String) visionProximaMap.get("vproximaoi"));
             visionProxima.setIdhistoriaclinica(idhistoriaClinica);
+            visionProxima.setFecha(fecha1);
+
             // Crear visionproxima
             visionProximaService.agregarVisionProxima(visionProxima);
 
@@ -110,6 +136,8 @@ public class HistoriaClinicaController {
             motilidad.setOjodominante((String) motilidadMap.get("ojodominante"));
             motilidad.setManodominante((String) motilidadMap.get("manodominante"));
             motilidad.setIdhistoriaclinica(idhistoriaClinica);
+            motilidad.setFecha(fecha1);
+
 
             // Crear motilidad
             motilidadService.agregarMotilidad(motilidad);
@@ -119,6 +147,8 @@ public class HistoriaClinicaController {
             oftalmoscopia.setOd((String) oftalmoscopiaMap.get("oftalmoscopiaod"));
             oftalmoscopia.setOi((String) oftalmoscopiaMap.get("oftalmoscopiaoi"));
             oftalmoscopia.setIdhistoriaclinica(idhistoriaClinica);
+            oftalmoscopia.setFecha(fecha1);
+
 
             // Crear oftalmoscopia
             oftalmoscopiaService.agregarOftalmoscopia(oftalmoscopia);
@@ -128,6 +158,8 @@ public class HistoriaClinicaController {
             queratometria.setOd((String) queratometriaMap.get("queratometriaod"));
             queratometria.setOi((String) queratometriaMap.get("queratometriaoi"));
             queratometria.setIdhistoriaclinica(idhistoriaClinica);
+            queratometria.setFecha(fecha1);
+
 
             // Crear queratometria
             queratometriaService.agregarQueratometria(queratometria);
@@ -137,6 +169,8 @@ public class HistoriaClinicaController {
             retinoscopia.setOd((String) retinoscopiaMap.get("retinoscopiaod"));
             retinoscopia.setOi((String) retinoscopiaMap.get("retinoscopiaoi"));
             retinoscopia.setIdhistoriaclinica(idhistoriaClinica);
+            retinoscopia.setFecha(fecha1);
+
 
 
             // Crear retinoscopia
@@ -157,7 +191,15 @@ public class HistoriaClinicaController {
             rxFinal.setConducta((String) rxfinalMap.get("conducta"));
             rxFinal.setExaminador((String) rxfinalMap.get("examinador"));
             rxFinal.setControl((String) rxfinalMap.get("control"));
+            String observacion = (String) rxfinalMap.get("observaciones");
+            if (observacion != null){
+                rxFinal.setObservaciones((String) rxfinalMap.get("observaciones"));
+            }else {
+                rxFinal.setObservaciones(null);
+            }
             rxFinal.setIdhistoriaclinica(idhistoriaClinica);
+            rxFinal.setFecha(fecha1);
+
 
 
             // Crear rxfinal
@@ -167,6 +209,16 @@ public class HistoriaClinicaController {
             Paciente paciente1 = pacienteService.obtenerPacienteporId(idpaciente);
             paciente1.setIdhistoriaclinica(idhistoriaClinica);
             pacienteService.guardarPaciente(paciente1);
+            /* Auditoria*/
+            Auditoria auditoria = new Auditoria();
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(requestBody);
+            auditoria.setInformacion(jsonString);
+            auditoria.setAccion("Registro Historia clinica del paciente "+ idpaciente);
+            auditoria.setFecha(fecha1);
+            auditoria.setIdusuario((int) pacienteMap.get("idoptometra"));
+            auditoriaServices.registrarAuditoria(auditoria);
+
 
 
 
@@ -178,18 +230,46 @@ public class HistoriaClinicaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
-    @GetMapping("/generarFormula/{id}")
-    public ResponseEntity<?> formulaclinica(@PathVariable("id") int id) {
-        Paciente resultado = pacienteService.obtenerPacienteporId(id);
-        int idHistoriaClinica = resultado.getIdhistoriaclinica();
-        Optional<RxFinal> rxFinal = rxFinalService.rxFinal(idHistoriaClinica);
+    @GetMapping("/generarFormula")
+    public void generarFormulaPdf(@RequestParam("od") String od,
+                                  @RequestParam("oi") String oi,
+                                  @RequestParam("avl") String avl,
+                                  @RequestParam("avp") String avp,
+                                  @RequestParam("addicion") String addicion,
+                                  @RequestParam("bif") String bif,
+                                  @RequestParam("uso") String uso,
+                                  @RequestParam("diagnostico") String diagnostico,
+                                  @RequestParam("observaciones") String observaciones,
+                                  @RequestParam("idcita") int idcita,
+                                  HttpServletResponse response) throws IOException {
+        RxFinal rxFinal = new RxFinal();
+        rxFinal.setOd(od);
+        rxFinal.setOi(oi);
+        rxFinal.setAvl(avl);
+        rxFinal.setAvp(avp);
+        rxFinal.setAddicion(addicion);
+        rxFinal.setBif(bif);
+        rxFinal.setUso(uso);
+        rxFinal.setDiagnostico(diagnostico);
+        rxFinal.setObservaciones(observaciones);
 
-        if (rxFinal != null) {
-            return ResponseEntity.ok(rxFinal);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontro la formula");
-        }
+        response.setContentType("application/pdf");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String fecha1 = dateFormat.format(new Date());
+
+        String cabecera = "Content-Disposition";
+        String valor = "attachment; filename=Formula" + fecha1 + ".pdf";
+        response.setHeader(cabecera, valor);
+
+        FormulaClinicaPdf exportePdf = new FormulaClinicaPdf(rxFinal);
+        exportePdf.export(response);
+        Cita cita = citaService.citaid(idcita);
+        cita.setEstado(false);
+        citaService.actualizarCita(cita);
+
     }
+
+
     @PostMapping("/crearhistoria")
     public ResponseEntity<?> formulaclinica() {
         Historiaclinica historiaClinica1 = new Historiaclinica();
@@ -201,6 +281,23 @@ public class HistoriaClinicaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se encontro la historia clinica");
         }
     }
+
+    @GetMapping("/buscarHistoria/{cedula}")
+    public ResponseEntity<HistoriaClinitaResponseDTO> buscarHistoria(@PathVariable("cedula") Long id) {
+        List<HistoriaClinicaDTO> historiaClinicaDTOS = historiaClinicaService.listaHistoria(id);
+        Usuario usuario = usuarioService.obtenerUsuarioCedula(id);
+        Paciente pacienteBD = pacienteService.obtenerPacienteporId(usuario.getIdusuario());
+
+        if (historiaClinicaDTOS != null && pacienteBD != null) {
+            HistoriaClinitaResponseDTO responseDTO = new HistoriaClinitaResponseDTO();
+            responseDTO.setHistoriaClinicaDTOS(historiaClinicaDTOS);
+            responseDTO.setPacienteDTO(pacienteBD);
+            return ResponseEntity.ok(responseDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
 
 
 

@@ -22,6 +22,7 @@ public class VisionLejana {
     private String distanciapupilar;
     private String examenexterno;
     private int idhistoriaclinica;
+    String fecha;
 
 
 }

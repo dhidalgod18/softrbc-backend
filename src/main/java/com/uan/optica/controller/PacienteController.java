@@ -1,9 +1,8 @@
 package com.uan.optica.controller;
 
-import com.uan.optica.entities.Paciente;
-import com.uan.optica.entities.Usuario;
-import com.uan.optica.entities.UsuarioOptometraDTO;
-import com.uan.optica.entities.UsuarioPacienteDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uan.optica.entities.*;
+import com.uan.optica.service.AuditoriaServices;
 import com.uan.optica.service.EnvioCorreoService;
 import com.uan.optica.service.PacienteService;
 import com.uan.optica.service.UsuarioService;
@@ -12,8 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
 
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,8 +37,11 @@ public class PacienteController {
     @Autowired
     private EnvioCorreoService envioCorreoService;
 
+    @Autowired
+    AuditoriaServices auditoriaServices;
 
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
 
     @PostMapping("/nueva")
@@ -90,11 +97,17 @@ public class PacienteController {
             }
 
             System.out.println(paciente.toString()+"Paciente");
-
-
-
             pacienteService.crearPaciente(paciente);
-
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
+            Auditoria auditoria = new Auditoria();
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(requestBody);
+            auditoria.setInformacion(jsonString);
+            auditoria.setAccion("Registro Paciente");
+            auditoria.setFecha(fecha1);
+            auditoria.setIdusuario(paciente.getIdpaciente());
+            auditoriaServices.registrarAuditoria(auditoria);
 
 
             return ResponseEntity.ok().build(); // Registro exitoso
@@ -113,13 +126,37 @@ public class PacienteController {
 
     }
     @PutMapping("/actualizar")
-    public ResponseEntity<?> actualizarPaciente(@RequestBody UsuarioPacienteDTO pacienteDTO) {
+    public ResponseEntity<?> actualizarPaciente(@RequestBody Map<String, Object> requestBody) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String fecha1 = dateFormat.format(new Date());
         try {
+            int idOptometra = (int) requestBody.get("idoptometra");
+
+            UsuarioPacienteDTO pacienteDTO = objectMapper.convertValue(requestBody.get("pacienteDTO"), UsuarioPacienteDTO.class);
 
             // Modificar los datos del paciente
             boolean resultado = pacienteService.modificarDatosOptometra(pacienteDTO);
 
             if (resultado) {
+                // Obtener la información anterior del paciente
+                Paciente pacienteAnterior = pacienteService.obtenerPacienteporId(pacienteDTO.getPaciente().getIdpaciente());
+
+                // Crear un Map para almacenar la información anterior y actualizada del paciente
+                Map<String, Object> informacionPaciente = new HashMap<>();
+                informacionPaciente.put("anterior", pacienteAnterior);
+                informacionPaciente.put("actualizada", pacienteDTO);
+
+                // Convertir el Map a JSON
+                String jsonString = objectMapper.writeValueAsString(informacionPaciente);
+
+                // Crear y configurar el objeto de auditoría
+                Auditoria auditoria = new Auditoria();
+                auditoria.setInformacion(jsonString);
+                auditoria.setAccion("Actualizar datos del paciente");
+                auditoria.setFecha(fecha1);
+                auditoria.setIdusuario(idOptometra);
+                // Registrar la auditoría
+                auditoriaServices.registrarAuditoria(auditoria);
                 return ResponseEntity.ok().build();
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar los datos del paciente");

@@ -15,8 +15,9 @@ import lombok.NoArgsConstructor;
 public class Anamnesis {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idAnamnesis;
+    private int idanamnesis;
     private String anamnesis;
     private int idhistoriaclinica;
+    String fecha;
 
 }

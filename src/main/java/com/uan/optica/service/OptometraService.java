@@ -7,5 +7,6 @@ import org.springframework.stereotype.Service;
 
 public interface OptometraService {
         Optometra crearOptometra(Optometra optometra);
+        int obtenerOptometra();
 
 }

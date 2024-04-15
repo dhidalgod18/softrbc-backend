@@ -82,6 +82,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String apellido = ((MyUserDetails) authResult.getPrincipal()).getApellido();
         Long telefono = ((MyUserDetails) authResult.getPrincipal()).getTelefono();
         int idPaciente = ((MyUserDetails) authResult.getPrincipal()).getIdpaciente(); // Obtener el ID del paciente
+        int idOptometra = ((MyUserDetails) authResult.getPrincipal()).getIdoptometra(); // Obtener el ID del optometra
+        int idadmin = ((MyUserDetails) authResult.getPrincipal()).getIdadmin(); // Obtener el ID del admin
 
 
 
@@ -91,8 +93,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
         if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_ADMIN"))) {
             claims.put("isAdmin", true);
+            claims.put("idadmin", idadmin);
+
         } else if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_OPTOMETRA"))) {
             claims.put("isOptometra", true);
+            claims.put("idoptometra", idOptometra);
         } else if (roles.stream().anyMatch(r -> r.getAuthority().equals("ROLE_PACIENTE"))) {
             claims.put("isPaciente", true);
             claims.put("idpaciente", idPaciente);

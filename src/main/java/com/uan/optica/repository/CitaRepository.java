@@ -23,5 +23,7 @@ public interface CitaRepository extends JpaRepository<Cita, Integer> {
     @Query("SELECT c FROM Cita c WHERE c.fecha = :fecha")
     List<Cita> obtenerCitasPorFecha(@Param("fecha") String fecha);
     void deleteById(int id);
+    @Query("SELECT u FROM Cita u WHERE u.idcita = :idcita")
+    Cita cita(@Param("idcita") int idcita);
 
 }

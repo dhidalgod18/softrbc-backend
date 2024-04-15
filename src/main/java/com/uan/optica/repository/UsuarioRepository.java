@@ -19,6 +19,9 @@ public interface UsuarioRepository  extends JpaRepository<Usuario, Integer> {
     @Query("SELECT u FROM Usuario u WHERE u.rol = :rol")
     List<Usuario> findByRol(@Param("rol") String rol);
 
+    @Query("SELECT u FROM Usuario u WHERE u.cedula = :cedula")
+    Usuario findByUsuarioIdp(@Param("cedula") Long cedula);
+
 
 
 

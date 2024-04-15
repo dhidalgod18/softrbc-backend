@@ -39,12 +39,12 @@ public class PacienteServiceImpl implements PacienteService {
     }
 
     @Override
-    public Paciente obtenerPacienteporId(int idpaciente) {
-        Paciente paciente = pacienteRepository.findPacienteId(idpaciente);
+    public Paciente obtenerPacienteporId(int idusuario) {
+        Paciente paciente = pacienteRepository.findById(idusuario);
         if (paciente != null) {
             System.out.println("Cita encontrado: " + paciente.getIdpaciente()); // Imprime el nombre del usuario encontrado
         } else {
-            System.out.println("Paciente no encontrado por el idpaciente: " + idpaciente);
+            System.out.println("Paciente no encontrado por el idpaciente: "+ paciente.getIdpaciente());
         }
         return paciente;
 
@@ -118,5 +118,6 @@ public class PacienteServiceImpl implements PacienteService {
             return false; // Ocurrió un error durante la modificación
         }
     }
+
 
 }

@@ -20,5 +20,6 @@ public class Antecedentes {
     private String oculares;
     private String generales;
     private int idhistoriaclinica;
+    String fecha;
 
 }

@@ -19,6 +19,8 @@ public class RxUso {
     private String oi;
     private String addicion;
     private int idhistoriaclinica;
+    String fecha;
+    
 
 
 }

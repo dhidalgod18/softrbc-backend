@@ -3,7 +3,9 @@ package com.uan.optica.service.Impl;
 import com.uan.optica.entities.Usuario;
 import com.uan.optica.repository.UsuarioRepository;
 import com.uan.optica.service.MyUserDetails;
+import com.uan.optica.service.OptometraService;
 import com.uan.optica.service.PacienteService;
+import com.uan.optica.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,10 @@ public class UseDetailsServiceImpl implements UserDetailsService {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private PacienteService pacienteService;
+    @Autowired
+    private OptometraService optometraService;
+    @Autowired
+    private UsuarioService usuarioService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     /**Toma el nombre del usuario de objeto de autenticacion, lo que trasmite el filtro
@@ -39,9 +45,11 @@ public class UseDetailsServiceImpl implements UserDetailsService {
 
         // Obtener el ID del paciente utilizando el servicio PacienteService
         int idPaciente = pacienteService.obtenerPaciente();
+        int idOptometra = optometraService.obtenerOptometra();
+        int idadmin = usuarioService.obtenerAdmin();
 
         // Crear una instancia de MyUserDetails con el usuario y el ID del paciente
-        MyUserDetails userDetails = new MyUserDetails(user, idPaciente);
+        MyUserDetails userDetails = new MyUserDetails(user, idPaciente, idOptometra,idadmin);
 
         return userDetails;
     }

@@ -1,7 +1,11 @@
 package com.uan.optica.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uan.optica.entities.Auditoria;
 import com.uan.optica.entities.Cita;
+import com.uan.optica.entities.Paciente;
 import com.uan.optica.reportes.CitaExportePdf;
+import com.uan.optica.service.AuditoriaServices;
 import com.uan.optica.service.CitaService;
 import com.uan.optica.service.EnvioCorreoService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +30,10 @@ public class CitaController {
     private CitaService citaService;
     @Autowired
     private EnvioCorreoService envioCorreoService;
+    @Autowired
+    AuditoriaServices auditoriaServices;
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+    String fecha1 = dateFormat.format(new Date());
 
     @GetMapping("/lista")
     public List<String> listahoras(@RequestParam String fecha) {
@@ -44,6 +52,7 @@ public class CitaController {
     @PostMapping("/nueva")
     public ResponseEntity<?> registrarCita(@RequestBody Map<String, Object> requestBody) {
         try {
+            int idpaciente = (int) requestBody.get("idpaciente");
             Cita cita = new Cita();
             String correo = (String) requestBody.get("correo");
             String fecha = (String) requestBody.get("fecha");
@@ -55,16 +64,18 @@ public class CitaController {
             cita.setCodigo(codigo);
             cita.setHora((String) requestBody.get("hora"));
             cita.setEstado(true);
-
-
-
-
             citaService.crearCita(cita);
-
             envioCorreoService.enviarCorreoVerificacionCita(correo,codigo,cita);
+            // Registrar la auditoría
+            Auditoria auditoria = new Auditoria();
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(requestBody);
+            auditoria.setInformacion(jsonString);
+            auditoria.setAccion("Registro cita para atencion del optometra");
+            auditoria.setFecha(fecha1);
+            auditoria.setIdusuario(idpaciente); // Suponiendo que idlogin es el ID del usuario que realiza la acción
+            auditoriaServices.registrarAuditoria(auditoria);
 
-
-            // Devuelve una respuesta indicando que el registro de auditoría fue exitoso
             return ResponseEntity.ok("Registro de auditoría exitoso");
         } catch (Exception e) {
             String errorMessage = "Error al intentar registrar: " + e.getMessage();
@@ -91,8 +102,16 @@ public class CitaController {
     }
         @DeleteMapping("/eliminar/{codigo}")
         public ResponseEntity<?> eliminarCita(@PathVariable String codigo) {
+            Cita cita = citaService.citaCodigo(codigo);
             boolean eliminado = citaService.eliminarCita(codigo);
+
             if (eliminado) {
+                Auditoria auditoria = new Auditoria();
+                auditoria.setInformacion("EL usuario "+ cita.getNombre()+" Cancelo la cita"); // Almacenar el estado como un String
+                auditoria.setAccion("Cancelar cita");
+                auditoria.setFecha(fecha1);
+                auditoria.setIdusuario(cita.getIdpaciente()); // Suponiendo que idlogin es el ID del usuario que realiza la acción
+                auditoriaServices.registrarAuditoria(auditoria);
                 return ResponseEntity.ok("La cita fue eliminada correctamente.");
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La cita con el código proporcionado no existe.");

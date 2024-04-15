@@ -1,8 +1,11 @@
 package com.uan.optica.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uan.optica.entities.Auditoria;
 import com.uan.optica.entities.Optometra;
 import com.uan.optica.entities.Usuario;
 import com.uan.optica.entities.UsuarioOptometraDTO;
+import com.uan.optica.service.AuditoriaServices;
 import com.uan.optica.service.EnvioCorreoService;
 import com.uan.optica.service.OptometraService;
 import com.uan.optica.service.UsuarioService;
@@ -12,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +39,10 @@ public class UsuarioController {
 
     @Autowired
     private EnvioCorreoService envioCorreoService;
-
+    @Autowired
+    AuditoriaServices auditoriaServices;
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+    String fecha1 = dateFormat.format(new Date());
 
 /**
     @GetMapping("/listaOptometras")
@@ -75,7 +84,7 @@ public class UsuarioController {
     @PostMapping("/nueva")
     public ResponseEntity<?> guardarNuevaUsuario(@RequestBody Map<String, Object> requestBody) {
         try {
-
+            int idlogin = (int) requestBody.get("idadmin");
             // Extraer los datos del usuario del cuerpo de la solicitud
             Map<String, Object> usuarioMap = (Map<String, Object>) requestBody.get("usuario");
             System.out.println("Usuario: " + usuarioMap);
@@ -125,7 +134,16 @@ public class UsuarioController {
 
 
             envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getCorreo(), pass,codigorec);
-
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
+            Auditoria auditoria = new Auditoria();
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonString = objectMapper.writeValueAsString(requestBody);
+            auditoria.setInformacion(jsonString);
+            auditoria.setAccion("Registro de Optometra");
+            auditoria.setFecha(fecha1);
+            auditoria.setIdusuario(idlogin);
+            auditoriaServices.registrarAuditoria(auditoria);
             return ResponseEntity.ok().build(); // Registro exitoso
 
 
@@ -136,10 +154,20 @@ public class UsuarioController {
     }
 
     @PutMapping("/cambiarEstado/{id}")
-    public ResponseEntity<?> editarEstadoOptometra(@PathVariable("id") int id) {
-        boolean resultado = usuarioService.cambiarEstadoUsuario(id);
+    public ResponseEntity<?> editarEstadoOptometra(@RequestBody Map<String, Object> requestBody) {
+        int idOptometra = (int) requestBody.get("idoptometra");
+        int idadmin = (int) requestBody.get("idadmin");
+        boolean resultado = usuarioService.cambiarEstadoUsuario(idOptometra);
 
         if (resultado) {
+            // Registrar la auditoría
+            Auditoria auditoria = new Auditoria();
+            auditoria.setInformacion(String.valueOf(resultado)); // Almacenar el estado como un String
+            auditoria.setAccion("Cambiar estado del Optometra(activo e inactivo)");
+            auditoria.setFecha(fecha1);
+            auditoria.setIdusuario(idadmin); // Suponiendo que idlogin es el ID del usuario que realiza la acción
+            auditoriaServices.registrarAuditoria(auditoria);
+
             return ResponseEntity.ok("El estado del optometra ha sido cambiado exitosamente");
 
         } else {
@@ -180,6 +208,13 @@ public class UsuarioController {
         // Actualizar la contraseña del usuario
         boolean actualizacionContraseñaExitosa = usuarioService.actualizarContraseña(usuario.getIdusuario(), nuevaContraseña);
         if (actualizacionContraseñaExitosa) {
+            // Registrar la auditoría
+            Auditoria auditoria = new Auditoria();
+            auditoria.setInformacion("EL usuario "+ usuario.getNombre()+"Actualizo la contraseña"); // Almacenar el estado como un String
+            auditoria.setAccion("Actualizar informacion");
+            auditoria.setFecha(fecha1);
+            auditoria.setIdusuario(usuario.getIdusuario()); // Suponiendo que idlogin es el ID del usuario que realiza la acción
+            auditoriaServices.registrarAuditoria(auditoria);
             // Si la actualización de la contraseña es exitosa, devolver un mensaje de éxito
             return ResponseEntity.ok().build();
         } else {

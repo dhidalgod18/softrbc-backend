@@ -82,5 +82,10 @@ public class CalendarioServiceImpl implements CalendarioService {
         return calendarios;
     }
 
+    @Override
+    public Optional<Calendario> obtener(int id) {
+        return calendarioRepository.findById(id);
+    }
+
 
 }
