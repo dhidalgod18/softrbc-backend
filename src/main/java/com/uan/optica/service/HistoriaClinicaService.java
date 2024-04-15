@@ -9,6 +9,6 @@ import java.util.List;
 public interface HistoriaClinicaService {
     Historiaclinica crearHistoria(Historiaclinica historiaClinica);
 
-    List<HistoriaClinicaDTO> listaHistoria(Long cedula);
+    HistoriaClinicaDTO listaHistoria(Long cedula);
 
 }

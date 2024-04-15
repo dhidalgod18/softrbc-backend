@@ -20,8 +20,7 @@ public class HisotiraClinicaServicesImpl  implements HistoriaClinicaService {
     }
 
     @Override
-    public List<HistoriaClinicaDTO> listaHistoria(Long cedula) {
-        List<HistoriaClinicaDTO> listaHistoriaDTO = new ArrayList<>();
+    public HistoriaClinicaDTO listaHistoria(Long cedula) {
 
         Usuario usuario = historiaClinicaRepository.findByUsuarioIdp(cedula);
         Paciente pacienteBD = historiaClinicaRepository.findPacienteId(usuario.getIdusuario());
@@ -41,9 +40,8 @@ public class HisotiraClinicaServicesImpl  implements HistoriaClinicaService {
 
         HistoriaClinicaDTO historiaClinicaDTO = new HistoriaClinicaDTO(anamnesis, antecedentes, rxUso, visionLejana,
                 visionProxima, motilidad, oftalmoscopia, queratometria, retinoscopia, rxFinal);
-        listaHistoriaDTO.add(historiaClinicaDTO);
 
-        return listaHistoriaDTO;
+        return historiaClinicaDTO;
     }
 
 

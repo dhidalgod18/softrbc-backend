@@ -10,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class HistoriaClinitaResponseDTO {
-    private List<HistoriaClinicaDTO> historiaClinicaDTOS;
+    private HistoriaClinicaDTO historiaClinicaDTOS;
     private Paciente pacienteDTO;
 }

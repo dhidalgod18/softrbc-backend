@@ -284,7 +284,7 @@ public class HistoriaClinicaController {
 
     @GetMapping("/buscarHistoria/{cedula}")
     public ResponseEntity<HistoriaClinitaResponseDTO> buscarHistoria(@PathVariable("cedula") Long id) {
-        List<HistoriaClinicaDTO> historiaClinicaDTOS = historiaClinicaService.listaHistoria(id);
+        HistoriaClinicaDTO historiaClinicaDTOS = historiaClinicaService.listaHistoria(id);
         Usuario usuario = usuarioService.obtenerUsuarioCedula(id);
         Paciente pacienteBD = pacienteService.obtenerPacienteporId(usuario.getIdusuario());
 
