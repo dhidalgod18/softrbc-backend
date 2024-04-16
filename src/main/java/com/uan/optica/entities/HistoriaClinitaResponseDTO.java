@@ -12,4 +12,6 @@ import java.util.List;
 public class HistoriaClinitaResponseDTO {
     private HistoriaClinicaDTO historiaClinicaDTOS;
     private Paciente pacienteDTO;
+
+    private Usuario usuario;
 }

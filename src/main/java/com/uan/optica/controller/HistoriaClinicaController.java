@@ -292,6 +292,7 @@ public class HistoriaClinicaController {
             HistoriaClinitaResponseDTO responseDTO = new HistoriaClinitaResponseDTO();
             responseDTO.setHistoriaClinicaDTOS(historiaClinicaDTOS);
             responseDTO.setPacienteDTO(pacienteBD);
+            responseDTO.setUsuario(usuario);
             return ResponseEntity.ok(responseDTO);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
