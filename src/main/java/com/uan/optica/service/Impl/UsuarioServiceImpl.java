@@ -126,6 +126,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
+    public Usuario obtener(int id) {
+        return usuarioRepository.obtener(id);
+    }
+
+    @Override
     public int obtenerAdmin() {
         List<Usuario> usuarios = usuarioRepository.findByRol("ROLE_ADMIN");
         int idadmin = 0;

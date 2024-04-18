@@ -42,6 +42,8 @@ public class PacienteController {
 
 
     private final ObjectMapper objectMapper = new ObjectMapper();
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+    String fecha1 = dateFormat.format(new Date());
 
 
     @PostMapping("/nueva")
@@ -83,7 +85,7 @@ public class PacienteController {
             String genero = (String) pacienteMap.get("genero");
             Paciente paciente = new Paciente();
             paciente.setOcupacion(ocupacion);
-            paciente.setFechanacimiento(fechaNacimiento);
+            paciente.setFechanacimiento(fechaNacimientoDateOnly);
             paciente.setGenero(genero);
             paciente.setIdusuario(usuario.getIdusuario());
             boolean aceptar = (Boolean) pacienteMap.get("aceptarterminos");
@@ -127,29 +129,57 @@ public class PacienteController {
     }
     @PutMapping("/actualizar")
     public ResponseEntity<?> actualizarPaciente(@RequestBody Map<String, Object> requestBody) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String fecha1 = dateFormat.format(new Date());
+
         try {
             int idOptometra = (int) requestBody.get("idoptometra");
+            UsuarioPacienteDTO usuarioPacienteDTO = new UsuarioPacienteDTO();
 
-            UsuarioPacienteDTO pacienteDTO = objectMapper.convertValue(requestBody.get("pacienteDTO"), UsuarioPacienteDTO.class);
+            Map<String, Object> usuarioMap = (Map<String, Object>) requestBody.get("usuario");
+            Usuario usuario = new Usuario();
+            usuario.setIdusuario((int) usuarioMap.get("idusuario"));
+            usuario.setNombre((String) usuarioMap.get("nombre"));
+            usuario.setApellido((String) usuarioMap.get("apellido"));
+            usuario.setCorreo((String) usuarioMap.get("correo"));
+            usuario.setDireccion((String) usuarioMap.get("direccion"));
+            usuario.setTelefono(Long.parseLong(usuarioMap.get("telefono").toString()));
+            usuario.setCedula(Long.parseLong(usuarioMap.get("cedula").toString()));
 
-            // Modificar los datos del paciente
-            boolean resultado = pacienteService.modificarDatosOptometra(pacienteDTO);
+            Map<String, Object> pacienteMap = (Map<String, Object>) requestBody.get("paciente");
+            int idpaciente = (int) pacienteMap.get("idpaciente");
+            String ocupacion = (String) pacienteMap.get("ocupacion");
+            String fechaNacimientoStr = (String) pacienteMap.get("fechanacimiento");
+            String fechaNacimientoDateOnly = fechaNacimientoStr.substring(0, 10); // Extraer solo la parte de la fecha
+            LocalDate fechaNacimiento = LocalDate.parse(fechaNacimientoDateOnly);
+            String genero = (String) pacienteMap.get("genero");
+            Paciente paciente = new Paciente();
+            paciente.setIdpaciente(idpaciente);
+            paciente.setOcupacion(ocupacion);
+            paciente.setFechanacimiento(fechaNacimientoDateOnly);
+            paciente.setGenero(genero);
+            usuarioPacienteDTO.setUsuario(usuario);
+            usuarioPacienteDTO.setPaciente(paciente);
+
+            Usuario usuarioanterior = usuarioService.obtener(usuarioPacienteDTO.getUsuario().getIdusuario());
+
+            Usuario usuariocopia = new Usuario();
+            usuariocopia.setIdusuario(usuarioanterior.getIdusuario());
+            usuariocopia.setNombre(usuarioanterior.getNombre());
+            usuariocopia.setApellido(usuarioanterior.getApellido());
+            usuariocopia.setCorreo(usuarioanterior.getCorreo());
+            usuariocopia.setDireccion(usuarioanterior.getDireccion());
+            usuariocopia.setTelefono(usuarioanterior.getTelefono());
+            usuariocopia.setCedula(usuarioanterior.getCedula());
+
+            boolean resultado = pacienteService.modificarDatosOptometra(usuarioPacienteDTO);
 
             if (resultado) {
-                // Obtener la información anterior del paciente
-                Paciente pacienteAnterior = pacienteService.obtenerPacienteporId(pacienteDTO.getPaciente().getIdpaciente());
 
-                // Crear un Map para almacenar la información anterior y actualizada del paciente
                 Map<String, Object> informacionPaciente = new HashMap<>();
-                informacionPaciente.put("anterior", pacienteAnterior);
-                informacionPaciente.put("actualizada", pacienteDTO);
+                informacionPaciente.put("anterior", usuariocopia);
+                informacionPaciente.put("actualizada", usuarioPacienteDTO);
 
-                // Convertir el Map a JSON
                 String jsonString = objectMapper.writeValueAsString(informacionPaciente);
 
-                // Crear y configurar el objeto de auditoría
                 Auditoria auditoria = new Auditoria();
                 auditoria.setInformacion(jsonString);
                 auditoria.setAccion("Actualizar datos del paciente");

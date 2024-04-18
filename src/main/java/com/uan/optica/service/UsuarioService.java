@@ -20,6 +20,8 @@ public interface UsuarioService {
     boolean actualizarContraseña(int idUsuario, String nuevaContraseña);
 
     Usuario obtenerUsuarioCedula(Long cedula);
+    Usuario obtener(int id);
+
     int obtenerAdmin();
 
 

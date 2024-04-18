@@ -58,26 +58,27 @@ public class CalendarioController {
     @PutMapping("/modificar/{id}")
     public ResponseEntity<?> editarCalendario(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
         String nuevadiasatencion = (String) requestBody.get("nuevadiasatencion");
-        int nuevaduracionLocal  = Integer.parseInt((String) requestBody.get("nuevaduracion"));
+        int nuevaduracionLocal  = Integer.parseInt(requestBody.get("nuevaduracion").toString());
 
         if (nuevadiasatencion == null) {
             return ResponseEntity.badRequest().body("Falta información requerida");
         }
+        Optional<Calendario> calendarioanterior = calendarioService.obtener(id);
+        Calendario calendario = new Calendario();
+        calendario.setDiasatencion(calendarioanterior.get().getDiasatencion());
+        calendario.setDuracioncita(calendarioanterior.get().getDuracioncita());
 
         boolean resultado = calendarioService.modificarDatosCalendario(id, nuevadiasatencion, nuevaduracionLocal);
 
         if (resultado) {
             // Obtener la información anterior del paciente
-            Optional<Calendario> calendarioanterior = calendarioService.obtener(id);
-            Calendario calendario = new Calendario();
-            calendario.setDiasatencion(nuevadiasatencion);
-            calendario.setDuracioncita(nuevaduracionLocal);
+
 
 
             // Crear un Map para almacenar la información anterior y actualizada del paciente
             Map<String, Object> informacionPaciente = new HashMap<>();
-            informacionPaciente.put("anterior", calendarioanterior);
-            informacionPaciente.put("actualizada", calendario);
+            informacionPaciente.put("anterior", calendario);
+            informacionPaciente.put("actualizada", calendarioanterior);
 
             // Convertir el Map a JSON
             String jsonString = objectMapper.writeValueAsString(informacionPaciente);

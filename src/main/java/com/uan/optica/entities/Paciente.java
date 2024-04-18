@@ -18,7 +18,7 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idpaciente;
     private String ocupacion;
-    private LocalDate fechanacimiento;
+    private String fechanacimiento;
 
     private String genero;
 

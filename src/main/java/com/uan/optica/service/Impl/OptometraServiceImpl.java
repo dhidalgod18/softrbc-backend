@@ -33,4 +33,9 @@ public class OptometraServiceImpl implements OptometraService {
         return idOptometraLogin;
 
     }
+
+    @Override
+    public Optometra obtener(int id) {
+        return optometraRepository.findByUsuarioId(id);
+    }
 }

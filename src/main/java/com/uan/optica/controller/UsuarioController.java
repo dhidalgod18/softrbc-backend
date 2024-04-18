@@ -1,5 +1,6 @@
 package com.uan.optica.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uan.optica.entities.Auditoria;
 import com.uan.optica.entities.Optometra;
@@ -17,9 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.uan.optica.filtros.CodigoRecuperacion.generarCodigoRecuperacion;
 import static com.uan.optica.filtros.PasswordAleatorio.generarPassword;
@@ -41,6 +40,8 @@ public class UsuarioController {
     private EnvioCorreoService envioCorreoService;
     @Autowired
     AuditoriaServices auditoriaServices;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
     String fecha1 = dateFormat.format(new Date());
 
@@ -64,7 +65,7 @@ public class UsuarioController {
         return usuarioService.obtenerUsuariosOptometra();
     }*/
     @PutMapping("/modificar/{id}")
-    public ResponseEntity<?> editarDatosOptometra(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<?> editarDatosOptometra(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
         String nuevadireccion = (String) requestBody.get("nuevadireccion");
         String nuevocorreo = (String) requestBody.get("nuevocorreo");
         Long nuevotelefono = Long.parseLong((String) requestBody.get("nuevotelefono"));
@@ -73,9 +74,37 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body("Falta información requerida");
         }
 
+        Usuario optometraAnterior = usuarioService.obtener(id);
+
+// Crear una copia de la información anterior
+        Usuario optometraAnteriorCopia = new Usuario();
+        optometraAnteriorCopia.setDireccion(optometraAnterior.getDireccion());
+        optometraAnteriorCopia.setCorreo(optometraAnterior.getCorreo());
+        optometraAnteriorCopia.setTelefono(optometraAnterior.getTelefono());
+
+// Intentar modificar los datos del optometra
         boolean resultado = usuarioService.modificarDatosOptometra(id, nuevadireccion, nuevocorreo, nuevotelefono);
 
         if (resultado) {
+            // Convertir la nueva información a JSON
+            Map<String, Object> informacionOptometra = new HashMap<>();
+            informacionOptometra.put("anterior", optometraAnteriorCopia);
+            informacionOptometra.put("nuevadireccion", nuevadireccion);
+            informacionOptometra.put("nuevocorreo", nuevocorreo);
+            informacionOptometra.put("nuevotelefono", nuevotelefono);
+            String jsonString = objectMapper.writeValueAsString(informacionOptometra);
+
+            // Crear y configurar el objeto de auditoría
+            Auditoria auditoria = new Auditoria();
+            auditoria.setInformacion(jsonString);
+            auditoria.setAccion("Actualizar datos del optometra");
+            auditoria.setFecha(fecha1);
+            int idAdmin = (int) requestBody.get("idadmin");
+            auditoria.setIdusuario(idAdmin);
+
+            // Registrar la auditoría
+            auditoriaServices.registrarAuditoria(auditoria);
+
             return ResponseEntity.ok("Datos del optometra actualizados exitosamente");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar los datos del optometra");
@@ -153,17 +182,18 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping("/cambiarEstado/{id}")
+    @PutMapping("/cambiarEstado")
     public ResponseEntity<?> editarEstadoOptometra(@RequestBody Map<String, Object> requestBody) {
-        int idOptometra = (int) requestBody.get("idoptometra");
+        int idusuario = (int) requestBody.get("idoptometra");
+        int id = (int) requestBody.get("idusuario");
         int idadmin = (int) requestBody.get("idadmin");
-        boolean resultado = usuarioService.cambiarEstadoUsuario(idOptometra);
+        boolean resultado = usuarioService.cambiarEstadoUsuario(id);
 
         if (resultado) {
             // Registrar la auditoría
             Auditoria auditoria = new Auditoria();
             auditoria.setInformacion(String.valueOf(resultado)); // Almacenar el estado como un String
-            auditoria.setAccion("Cambiar estado del Optometra(activo e inactivo)");
+            auditoria.setAccion("Cambiar estado del Optometra");
             auditoria.setFecha(fecha1);
             auditoria.setIdusuario(idadmin); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);

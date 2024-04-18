@@ -17,6 +17,7 @@ public interface PacienteService {
     boolean guardarPaciente(Paciente paciente);
     List<UsuarioPacienteDTO> obtenerUsuariosPacienteDTO(int id);
     boolean modificarDatosOptometra(UsuarioPacienteDTO pacienteDTO);
+    Paciente obtener(int idusuario);
 
 
 

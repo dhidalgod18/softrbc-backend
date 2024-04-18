@@ -286,7 +286,7 @@ public class HistoriaClinicaController {
     public ResponseEntity<HistoriaClinitaResponseDTO> buscarHistoria(@PathVariable("cedula") Long id) {
         HistoriaClinicaDTO historiaClinicaDTOS = historiaClinicaService.listaHistoria(id);
         Usuario usuario = usuarioService.obtenerUsuarioCedula(id);
-        Paciente pacienteBD = pacienteService.obtenerPacienteporId(usuario.getIdusuario());
+        Paciente pacienteBD = pacienteService.obtener(usuario.getIdusuario());
 
         if (historiaClinicaDTOS != null && pacienteBD != null) {
             HistoriaClinitaResponseDTO responseDTO = new HistoriaClinitaResponseDTO();
