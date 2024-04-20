@@ -68,30 +68,32 @@ public class UsuarioController {
     public ResponseEntity<?> editarDatosOptometra(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
         String nuevadireccion = (String) requestBody.get("nuevadireccion");
         String nuevocorreo = (String) requestBody.get("nuevocorreo");
-        Long nuevotelefono = Long.parseLong((String) requestBody.get("nuevotelefono"));
+        Long nuevotelefono = Long.parseLong(requestBody.get("nuevotelefono").toString());
 
         if (nuevadireccion == null || nuevocorreo == null) {
             return ResponseEntity.badRequest().body("Falta información requerida");
         }
 
         Usuario optometraAnterior = usuarioService.obtener(id);
-
-// Crear una copia de la información anterior
         Usuario optometraAnteriorCopia = new Usuario();
+        optometraAnteriorCopia.setIdusuario(optometraAnterior.getIdusuario());
+        optometraAnteriorCopia.setNombre(optometraAnterior.getNombre());
+        optometraAnteriorCopia.setApellido(optometraAnterior.getApellido());
+        optometraAnteriorCopia.setPassword(optometraAnterior.getPassword());
+        optometraAnteriorCopia.setRol(optometraAnterior.getRol());
+        optometraAnteriorCopia.setCedula(optometraAnterior.getCedula());
+        optometraAnteriorCopia.setCodigorecuperacion(optometraAnterior.getCodigorecuperacion());
         optometraAnteriorCopia.setDireccion(optometraAnterior.getDireccion());
         optometraAnteriorCopia.setCorreo(optometraAnterior.getCorreo());
         optometraAnteriorCopia.setTelefono(optometraAnterior.getTelefono());
-
-// Intentar modificar los datos del optometra
         boolean resultado = usuarioService.modificarDatosOptometra(id, nuevadireccion, nuevocorreo, nuevotelefono);
 
         if (resultado) {
             // Convertir la nueva información a JSON
             Map<String, Object> informacionOptometra = new HashMap<>();
             informacionOptometra.put("anterior", optometraAnteriorCopia);
-            informacionOptometra.put("nuevadireccion", nuevadireccion);
-            informacionOptometra.put("nuevocorreo", nuevocorreo);
-            informacionOptometra.put("nuevotelefono", nuevotelefono);
+            informacionOptometra.put("Actualizada", optometraAnterior);
+
             String jsonString = objectMapper.writeValueAsString(informacionOptometra);
 
             // Crear y configurar el objeto de auditoría
@@ -183,16 +185,25 @@ public class UsuarioController {
     }
 
     @PutMapping("/cambiarEstado")
-    public ResponseEntity<?> editarEstadoOptometra(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<?> editarEstadoOptometra(@RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
         int idusuario = (int) requestBody.get("idoptometra");
         int id = (int) requestBody.get("idusuario");
         int idadmin = (int) requestBody.get("idadmin");
+        Usuario resultadanterior = usuarioService.obtener(id);
+        Optometra op = optometraService.obtener(resultadanterior.getIdusuario());
+        Optometra optometraAnterior = new Optometra();
+        optometraAnterior.setActivo(op.isActivo());
         boolean resultado = usuarioService.cambiarEstadoUsuario(id);
 
         if (resultado) {
+            Map<String, Object> estado = new HashMap<>();
+            estado.put("anterior", optometraAnterior);
+            estado.put("Actualizada", resultado);
+
+            String jsonString = objectMapper.writeValueAsString(estado);
             // Registrar la auditoría
             Auditoria auditoria = new Auditoria();
-            auditoria.setInformacion(String.valueOf(resultado)); // Almacenar el estado como un String
+            auditoria.setInformacion(String.valueOf(jsonString)); // Almacenar el estado como un String
             auditoria.setAccion("Cambiar estado del Optometra");
             auditoria.setFecha(fecha1);
             auditoria.setIdusuario(idadmin); // Suponiendo que idlogin es el ID del usuario que realiza la acción
@@ -226,7 +237,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/actualizarContrasena")
-    public ResponseEntity<?> actualizarContraseña(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<?> actualizarContraseña(@RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
         String cedula = (String) requestBody.get("cedula");
         String nuevaContraseña = (String) requestBody.get("nuevacontrasena");
         // Buscar en la base de datos el usuario con el correo proporcionado
@@ -238,10 +249,14 @@ public class UsuarioController {
         // Actualizar la contraseña del usuario
         boolean actualizacionContraseñaExitosa = usuarioService.actualizarContraseña(usuario.getIdusuario(), nuevaContraseña);
         if (actualizacionContraseñaExitosa) {
+            Map<String, Object> estado = new HashMap<>();
+            estado.put("Contraseña Actualizada","EL usuario " + usuario.getNombre() + " Actualizo la contraseña");
+            String jsonString = objectMapper.writeValueAsString(estado);
+
             // Registrar la auditoría
             Auditoria auditoria = new Auditoria();
-            auditoria.setInformacion("EL usuario "+ usuario.getNombre()+"Actualizo la contraseña"); // Almacenar el estado como un String
-            auditoria.setAccion("Actualizar informacion");
+            auditoria.setInformacion(jsonString); // Almacenar el estado como un String
+            auditoria.setAccion("Actualizar contraseña");
             auditoria.setFecha(fecha1);
             auditoria.setIdusuario(usuario.getIdusuario()); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);

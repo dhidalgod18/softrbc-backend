@@ -18,8 +18,13 @@ public interface CitaService {
     boolean eliminarCita(String codigo);
 
     List<Cita> obtenercitas(String fecha);
+    List<Cita> obtenercitasEstadoFalse();
+
 
     void eliminar(int cita);
     Cita actualizarCita(Cita cita);
+
+
+
 
 }

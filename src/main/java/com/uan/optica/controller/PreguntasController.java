@@ -1,8 +1,12 @@
 package com.uan.optica.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uan.optica.entities.Auditoria;
 import com.uan.optica.entities.Calendario;
 import com.uan.optica.entities.Preguntas;
 import com.uan.optica.entities.UsuarioOptometraDTO;
+import com.uan.optica.service.AuditoriaServices;
 import com.uan.optica.service.CalendarioService;
 import com.uan.optica.service.PreguntasServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +26,12 @@ import java.util.Map;
 public class PreguntasController {
     @Autowired
     private PreguntasServices preguntasServices;
+    @Autowired
+    AuditoriaServices auditoriaServices;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+    String fecha1 = dateFormat.format(new Date());
 
     @GetMapping("/listaPreguntas")
     public List<Preguntas> listaOptometras() {
@@ -30,8 +44,14 @@ public class PreguntasController {
             Preguntas preguntas = new Preguntas();
             preguntas.setPregunta((String) requestBody.get("pregunta"));
             preguntas.setRespuesta((String) requestBody.get("respuesta"));
-
             preguntasServices.crearPreguntasRespuestas(preguntas);
+            Auditoria auditoria = new Auditoria();
+            String jsonString = objectMapper.writeValueAsString(requestBody);
+            auditoria.setInformacion(jsonString);
+            auditoria.setAccion("Registro preguntas chatbot");
+            auditoria.setFecha(fecha1);
+            auditoria.setIdusuario((int) requestBody.get("idadmin")); // Suponiendo que idlogin es el ID del usuario que realiza la acción
+            auditoriaServices.registrarAuditoria(auditoria);
 
             return ResponseEntity.ok().build(); // Registro exitoso
 
@@ -42,12 +62,15 @@ public class PreguntasController {
         }
     }
     @PutMapping("/modificar/{id}")
-    public ResponseEntity<?> modificarPreguntas(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<?> modificarPreguntas(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
         String nuevaPregunta = (String) requestBody.get("pregunta");
         String nuevaRespuesta = (String) requestBody.get("respuesta");
+        Preguntas preguntas = preguntasServices.buscar(id);
 
-        System.out.println(nuevaPregunta);
-        System.out.println(nuevaRespuesta);
+        Preguntas preguntasanterior = new Preguntas();
+        preguntasanterior.setIdpregunta(preguntas.getIdpregunta());
+        preguntasanterior.setPregunta(preguntas.getPregunta());
+        preguntasanterior.setRespuesta(preguntas.getRespuesta());
 
 
         if (nuevaPregunta == null || nuevaRespuesta == null ) {
@@ -57,6 +80,22 @@ public class PreguntasController {
         boolean resultado = preguntasServices.modificarDatosOptometra(id, nuevaPregunta, nuevaRespuesta);
 
         if (resultado) {
+            // Convertir la nueva información a JSON
+            Map<String, Object> informacionOptometra = new HashMap<>();
+            informacionOptometra.put("anterior", preguntasanterior);
+            informacionOptometra.put("Actualizada", preguntas);
+
+            String jsonString = objectMapper.writeValueAsString(informacionOptometra);
+
+            // Crear y configurar el objeto de auditoría
+            Auditoria auditoria = new Auditoria();
+            auditoria.setInformacion(jsonString);
+            auditoria.setAccion("Actualizar datos de preguntas");
+            auditoria.setFecha(fecha1);
+            int idAdmin = (int) requestBody.get("idadmin");
+            auditoria.setIdusuario(idAdmin);
+            auditoriaServices.registrarAuditoria(auditoria);
+
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar los datos de la pregunta");
@@ -64,10 +103,22 @@ public class PreguntasController {
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<?> eliminarPregunta(@PathVariable("id") int id) {
+    public ResponseEntity<?> eliminarPregunta(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
+        Preguntas preguntas = preguntasServices.buscar(id);
         boolean eliminacionExitosa = preguntasServices.eliminarPregunta(id);
         System.out.println(id+"Quien tiene");
         if (eliminacionExitosa) {
+            Map<String, Object> informacionOptometra = new HashMap<>();
+            informacionOptometra.put("Eliminar pregunta", preguntas);
+            String jsonString = objectMapper.writeValueAsString(informacionOptometra);
+
+
+            Auditoria auditoria = new Auditoria();
+            auditoria.setInformacion(jsonString); // Almacenar el estado como un String
+            auditoria.setAccion("eliminar pregunta");
+            auditoria.setFecha(fecha1);
+            auditoria.setIdusuario((int) requestBody.get("idadmin")); // Suponiendo que idlogin es el ID del usuario que realiza la acción
+            auditoriaServices.registrarAuditoria(auditoria);
             return ResponseEntity.ok().build(); // Eliminación exitosa
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo eliminar la pregunta");

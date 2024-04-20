@@ -1,5 +1,6 @@
 package com.uan.optica.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uan.optica.entities.Auditoria;
 import com.uan.optica.entities.Cita;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +34,8 @@ public class CitaController {
     private EnvioCorreoService envioCorreoService;
     @Autowired
     AuditoriaServices auditoriaServices;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
     String fecha1 = dateFormat.format(new Date());
 
@@ -46,6 +50,11 @@ public class CitaController {
     @GetMapping("/listacitas")
     public List<Cita> listaCitas(@RequestParam String fecha) {
         List<Cita> listaCitas = citaService.obtenercitas(fecha);
+        return listaCitas;
+    }
+    @GetMapping("/listacitasInactivas")
+    public List<Cita> listaCitasInactivas() {
+        List<Cita> listaCitas = citaService.obtenercitasEstadoFalse();
         return listaCitas;
     }
 
@@ -69,6 +78,7 @@ public class CitaController {
             // Registrar la auditoría
             Auditoria auditoria = new Auditoria();
             ObjectMapper objectMapper = new ObjectMapper();
+            requestBody.put("codigo",codigo);
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro cita para atencion del optometra");
@@ -101,13 +111,22 @@ public class CitaController {
         }
     }
         @DeleteMapping("/eliminar/{codigo}")
-        public ResponseEntity<?> eliminarCita(@PathVariable String codigo) {
+        public ResponseEntity<?> eliminarCita(@PathVariable String codigo) throws JsonProcessingException {
             Cita cita = citaService.citaCodigo(codigo);
+
+
+
+
             boolean eliminado = citaService.eliminarCita(codigo);
 
             if (eliminado) {
+                Map<String, Object> informacionOptometra = new HashMap<>();
+                informacionOptometra.put("Cancelar cita", cita);
+                String jsonString = objectMapper.writeValueAsString(informacionOptometra);
+
+
                 Auditoria auditoria = new Auditoria();
-                auditoria.setInformacion("EL usuario "+ cita.getNombre()+" Cancelo la cita"); // Almacenar el estado como un String
+                auditoria.setInformacion(jsonString); // Almacenar el estado como un String
                 auditoria.setAccion("Cancelar cita");
                 auditoria.setFecha(fecha1);
                 auditoria.setIdusuario(cita.getIdpaciente()); // Suponiendo que idlogin es el ID del usuario que realiza la acción

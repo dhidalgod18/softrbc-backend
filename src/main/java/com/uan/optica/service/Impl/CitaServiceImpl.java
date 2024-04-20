@@ -76,6 +76,21 @@ public class CitaServiceImpl implements CitaService {
     }
 
     @Override
+    public List<Cita> obtenercitasEstadoFalse() {
+        List<Cita> citas = citaRepository.findAll();
+
+        List<Cita> citasInactivas = new ArrayList<>();
+        for (Cita cita : citas) {
+            if (!cita.isEstado()) {
+                citasInactivas.add(cita);
+            }
+        }
+
+        return citasInactivas;
+
+    }
+
+    @Override
     public void eliminar(int cita) {
         citaRepository.deleteById(cita);
     }

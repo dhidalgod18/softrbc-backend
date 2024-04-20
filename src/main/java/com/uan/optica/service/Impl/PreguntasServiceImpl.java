@@ -59,4 +59,9 @@ public class PreguntasServiceImpl implements PreguntasServices {
     public List<Preguntas> obtenerPreguntas() {
         return preguntasRepository.findAll();
     }
+
+    @Override
+    public Preguntas buscar(int id) {
+        return preguntasRepository.lista(id);
+    }
 }

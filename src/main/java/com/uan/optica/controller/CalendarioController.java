@@ -73,6 +73,8 @@ public class CalendarioController {
         Calendario calendario = new Calendario();
         calendario.setDiasatencion(calendarioanterior.getDiasatencion());
         calendario.setDuracioncita(calendarioanterior.getDuracioncita());
+        calendario.setIdcalendario(calendarioanterior.getIdcalendario());
+        calendario.setIdoptometra(calendarioanterior.getIdoptometra());
 
         boolean resultado = calendarioService.modificarDatosCalendario(id, nuevadiasatencion, nuevaduracionLocal);
 

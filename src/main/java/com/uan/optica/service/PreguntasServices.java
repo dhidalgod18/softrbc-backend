@@ -12,6 +12,6 @@ public interface PreguntasServices {
     boolean modificarDatosOptometra(int idPregunta, String nuevaPregunta, String nuevaRespuesta);
     boolean eliminarPregunta(int idPregunta);
     List<Preguntas> obtenerPreguntas();
-
+    Preguntas buscar(int id);
 
 }
