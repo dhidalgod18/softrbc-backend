@@ -58,44 +58,52 @@ public class CalendarioController {
     @PutMapping("/modificar/{id}")
     public ResponseEntity<?> editarCalendario(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
         String nuevadiasatencion = (String) requestBody.get("nuevadiasatencion");
-        int nuevaduracionLocal  = Integer.parseInt(requestBody.get("nuevaduracion").toString());
+        int nuevaduracionLocal = Integer.parseInt(requestBody.get("nuevaduracion").toString());
 
         if (nuevadiasatencion == null) {
             return ResponseEntity.badRequest().body("Falta información requerida");
         }
-        Optional<Calendario> calendarioanterior = calendarioService.obtener(id);
+
+        Optional<Calendario> calendarioanteriorOpt = calendarioService.obtener(id);
+        if (!calendarioanteriorOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Calendario calendarioanterior = calendarioanteriorOpt.get();
+
         Calendario calendario = new Calendario();
-        calendario.setDiasatencion(calendarioanterior.get().getDiasatencion());
-        calendario.setDuracioncita(calendarioanterior.get().getDuracioncita());
+        calendario.setDiasatencion(calendarioanterior.getDiasatencion());
+        calendario.setDuracioncita(calendarioanterior.getDuracioncita());
 
         boolean resultado = calendarioService.modificarDatosCalendario(id, nuevadiasatencion, nuevaduracionLocal);
 
         if (resultado) {
-            // Obtener la información anterior del paciente
+            try {
+                // Crear un Map para almacenar la información anterior y actualizada del paciente
+                Map<String, Object> informacionPaciente = new HashMap<>();
+                informacionPaciente.put("anterior", calendario);
+                informacionPaciente.put("actualizada", calendarioanterior);
 
+                // Convertir el Map a JSON
+                String jsonString = objectMapper.writeValueAsString(informacionPaciente);
 
+                // Crear y configurar el objeto de auditoría
+                Auditoria auditoria = new Auditoria();
+                auditoria.setInformacion(jsonString);
+                auditoria.setAccion("Actualizar datos del calendario");
+                auditoria.setFecha(fecha1); // Asegúrate de tener fecha1 definida adecuadamente
+                auditoria.setIdusuario((int) requestBody.get("idadmin"));
 
-            // Crear un Map para almacenar la información anterior y actualizada del paciente
-            Map<String, Object> informacionPaciente = new HashMap<>();
-            informacionPaciente.put("anterior", calendario);
-            informacionPaciente.put("actualizada", calendarioanterior);
-
-            // Convertir el Map a JSON
-            String jsonString = objectMapper.writeValueAsString(informacionPaciente);
-
-            // Crear y configurar el objeto de auditoría
-            Auditoria auditoria = new Auditoria();
-            auditoria.setInformacion(jsonString);
-            auditoria.setAccion("Actualizar datos del calendario");
-            auditoria.setFecha(fecha1);
-            auditoria.setIdusuario((int) requestBody.get("idadmin"));
-            // Registrar la auditoría
-            auditoriaServices.registrarAuditoria(auditoria);
+                // Registrar la auditoría
+                auditoriaServices.registrarAuditoria(auditoria);
+            } catch (JsonProcessingException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al procesar la información");
+            }
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No se pudo actualizar los datos del calendario");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al modificar los datos del calendario");
         }
     }
+
     @GetMapping("/duracioncita/{dia}")
     public ResponseEntity<?> obtenerDuracionCitaPorDia(@PathVariable("dia") String dia) {
         try {
