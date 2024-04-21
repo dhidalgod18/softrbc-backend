@@ -42,30 +42,20 @@ public class UsuarioController {
     AuditoriaServices auditoriaServices;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-    String fecha1 = dateFormat.format(new Date());
 
-/**
-    @GetMapping("/listaOptometras")
-    public List<Usuario> listaOptometras() {
-        List<Usuario> optometras = usuarioService.obtenerUsuariosOptometra();
-        for (Usuario optometra : optometras) {
-            System.out.println("Nombre: " + optometra.getNombre() + ", Correo: " + optometra.getCorreo() + ", Rol: " + optometra.getRol());
-        }
-        return optometras;
-    }*/
+
+
+
+
     @GetMapping("/listaOptometras")
     public ResponseEntity<List<UsuarioOptometraDTO>> obtenerUsuariosOptometra() {
         List<UsuarioOptometraDTO> usuariosOptometraDTO = usuarioService.obtenerUsuariosOptometraDTO()  ;
         return ResponseEntity.ok(usuariosOptometraDTO);
     }
-/**
-    @GetMapping("/listaOptometras")
-    public List<Usuario> listaOptometras() {
-        return usuarioService.obtenerUsuariosOptometra();
-    }*/
+
     @PutMapping("/modificar/{id}")
     public ResponseEntity<?> editarDatosOptometra(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
+
         String nuevadireccion = (String) requestBody.get("nuevadireccion");
         String nuevocorreo = (String) requestBody.get("nuevocorreo");
         Long nuevotelefono = Long.parseLong(requestBody.get("nuevotelefono").toString());
@@ -100,6 +90,8 @@ public class UsuarioController {
             Auditoria auditoria = new Auditoria();
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Actualizar datos del optometra");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
             auditoria.setFecha(fecha1);
             int idAdmin = (int) requestBody.get("idadmin");
             auditoria.setIdusuario(idAdmin);
@@ -115,6 +107,7 @@ public class UsuarioController {
     @PostMapping("/nueva")
     public ResponseEntity<?> guardarNuevaUsuario(@RequestBody Map<String, Object> requestBody) {
         try {
+
             int idlogin = (int) requestBody.get("idadmin");
             // Extraer los datos del usuario del cuerpo de la solicitud
             Map<String, Object> usuarioMap = (Map<String, Object>) requestBody.get("usuario");
@@ -133,27 +126,23 @@ public class UsuarioController {
             usuario.setPassword(respass);
             usuario.setCedula(Long.parseLong((String) usuarioMap.get("cedula")));
             usuario.setRol("ROLE_OPTOMETRA");
-
-            // Extraer el objeto optometra del cuerpo de la solicitud
-            Map<String, Object> optometraMap = (Map<String, Object>) requestBody.get("optometra");
-            String numeroTarjeta = (String) optometraMap.get("numeroTarjeta");
-            System.out.println(numeroTarjeta+"numero tarjeta");
-            // Validar los campos requeridos para el optometra
-            if (numeroTarjeta == null) {
-                return ResponseEntity.badRequest().body("El número de tarjeta es requerido para el optometra");
-            }
             String codigorec = generarCodigoRecuperacion();
             System.out.println(codigorec + "codigo recuperacion que genero");
             String rescodigo = passwordEncoder.encode(codigorec);
             System.out.println(rescodigo + "codigo encriptada");
             usuario.setCodigorecuperacion(rescodigo);
 
-            // Crear el usuario
+            Usuario usuarioexiste = usuarioService.obtenerUsuarioCedula(usuario.getCedula());
+
+            if (usuarioexiste != null){
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ya existe un usuario registrado con el número de cédula proporcionado");
+
+            }
+
             usuarioService.crearPersona(usuario);
 
-            // Crear el optometra
             Optometra optometra = new Optometra();
-            optometra.setNumerotarjeta(numeroTarjeta);
 
             optometra.setIdusuario(usuario.getIdusuario()); // Asignar el ID del usuario
 
@@ -165,13 +154,14 @@ public class UsuarioController {
 
 
             envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getCorreo(), pass,codigorec);
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String fecha1 = dateFormat.format(new Date());
+
             Auditoria auditoria = new Auditoria();
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro de Optometra");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
             auditoria.setFecha(fecha1);
             auditoria.setIdusuario(idlogin);
             auditoriaServices.registrarAuditoria(auditoria);
@@ -186,7 +176,7 @@ public class UsuarioController {
 
     @PutMapping("/cambiarEstado")
     public ResponseEntity<?> editarEstadoOptometra(@RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
-        int idusuario = (int) requestBody.get("idoptometra");
+
         int id = (int) requestBody.get("idusuario");
         int idadmin = (int) requestBody.get("idadmin");
         Usuario resultadanterior = usuarioService.obtener(id);
@@ -198,13 +188,15 @@ public class UsuarioController {
         if (resultado) {
             Map<String, Object> estado = new HashMap<>();
             estado.put("anterior", optometraAnterior);
-            estado.put("Actualizada", resultado);
+            estado.put("Actualizada", op);
 
             String jsonString = objectMapper.writeValueAsString(estado);
             // Registrar la auditoría
             Auditoria auditoria = new Auditoria();
             auditoria.setInformacion(String.valueOf(jsonString)); // Almacenar el estado como un String
             auditoria.setAccion("Cambiar estado del Optometra");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
             auditoria.setFecha(fecha1);
             auditoria.setIdusuario(idadmin); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);
@@ -217,6 +209,8 @@ public class UsuarioController {
     }
     @GetMapping("/verificarCodigoRecuperacion")
     public ResponseEntity<?> verificarCodigoRecuperacion(@RequestParam String correo, @RequestParam String codigorecuperacion) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String fecha1 = dateFormat.format(new Date());
 
         // Buscar en la base de datos el usuario con el correo proporcionado
         Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(correo);
@@ -237,9 +231,10 @@ public class UsuarioController {
     }
 
     @PutMapping("/actualizarContrasena")
-    public ResponseEntity<?> actualizarContraseña(@RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
+    public ResponseEntity<?> actualizarContrasena(@RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
+
         String cedula = (String) requestBody.get("cedula");
-        String nuevaContraseña = (String) requestBody.get("nuevacontrasena");
+        String nuevaContrasena = (String) requestBody.get("nuevacontrasena");
         // Buscar en la base de datos el usuario con el correo proporcionado
         Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(cedula);
         if (usuario == null) {
@@ -247,8 +242,8 @@ public class UsuarioController {
         }
 
         // Actualizar la contraseña del usuario
-        boolean actualizacionContraseñaExitosa = usuarioService.actualizarContraseña(usuario.getIdusuario(), nuevaContraseña);
-        if (actualizacionContraseñaExitosa) {
+        boolean actualizacionContrasenaExitosa = usuarioService.actualizarContrasena(usuario.getIdusuario(), nuevaContrasena);
+        if (actualizacionContrasenaExitosa) {
             Map<String, Object> estado = new HashMap<>();
             estado.put("Contraseña Actualizada","EL usuario " + usuario.getNombre() + " Actualizo la contraseña");
             String jsonString = objectMapper.writeValueAsString(estado);
@@ -257,6 +252,8 @@ public class UsuarioController {
             Auditoria auditoria = new Auditoria();
             auditoria.setInformacion(jsonString); // Almacenar el estado como un String
             auditoria.setAccion("Actualizar contraseña");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
             auditoria.setFecha(fecha1);
             auditoria.setIdusuario(usuario.getIdusuario()); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);

@@ -14,9 +14,6 @@ public class Optometra {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idoptometra;
-
-    private String numerotarjeta;
-
     private  int idusuario;
 
     private boolean activo;

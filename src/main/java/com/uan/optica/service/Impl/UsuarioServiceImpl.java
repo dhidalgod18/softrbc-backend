@@ -1,7 +1,6 @@
 package com.uan.optica.service.Impl;
 
 import com.uan.optica.entities.Optometra;
-import com.uan.optica.entities.Paciente;
 import com.uan.optica.entities.Usuario;
 import com.uan.optica.entities.UsuarioOptometraDTO;
 import com.uan.optica.repository.OptometraRepository;
@@ -43,7 +42,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         for (Usuario usuario : usuarios) {
             Optometra optometra = optometraRepository.findByUsuarioId(usuario.getIdusuario());
             if (optometra != null) {
-                usuariosOptometraDTO.add(new UsuarioOptometraDTO(usuario, optometra.getIdoptometra(),optometra.getNumerotarjeta(), optometra.isActivo()));
+                usuariosOptometraDTO.add(new UsuarioOptometraDTO(usuario, optometra.getIdoptometra(),optometra.isActivo()));
             }
         }
 
@@ -102,13 +101,13 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public boolean actualizarContraseña(int idUsuario, String nuevaContraseña) {
+    public boolean actualizarContrasena(int idUsuario, String nuevaContrasena) {
         try {
             Optional<Usuario> optionalUsuario = usuarioRepository.findById(idUsuario);
             if (optionalUsuario.isPresent()) {
                 Usuario usuario = optionalUsuario.get();
-                String nuevaContraseñaEncriptada = passwordEncoder.encode(nuevaContraseña);
-                usuario.setPassword(nuevaContraseñaEncriptada);
+                String nuevaContrasenaEncriptada = passwordEncoder.encode(nuevaContrasena);
+                usuario.setPassword(nuevaContrasenaEncriptada);
                 usuarioRepository.save(usuario);
                 return true;
             } else {

@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class UsuarioOptometraDTO {
     private Usuario usuario;
     private int idoptometra;
-    private String numerotarjeta;
     private boolean activo;
 }

@@ -17,7 +17,7 @@ public interface UsuarioService {
 
     boolean cambiarEstadoUsuario(int idUsuario);
     Usuario obtenerUsuarioPorCorreo(String correo);
-    boolean actualizarContraseña(int idUsuario, String nuevaContraseña);
+    boolean actualizarContrasena(int idUsuario, String nuevaContraseña);
 
     Usuario obtenerUsuarioCedula(Long cedula);
     Usuario obtener(int id);
