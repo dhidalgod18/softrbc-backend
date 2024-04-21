@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uan.optica.entities.Auditoria;
 import com.uan.optica.entities.Calendario;
-import com.uan.optica.entities.Paciente;
 import com.uan.optica.service.AuditoriaServices;
 import com.uan.optica.service.CalendarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +23,12 @@ public class CalendarioController {
     @Autowired
     AuditoriaServices auditoriaServices;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-    String fecha1 = dateFormat.format(new Date());
+
 
 
     @PostMapping("/nueva")
     public ResponseEntity<?> guardarNuevoCalendario(@RequestBody Map<String, Object> requestBody) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String fecha1 = dateFormat.format(new Date());
+
         try {
             Calendario calendario = new Calendario();
             calendario.setDiasatencion((String) requestBody.get("diasatencion"));
@@ -43,6 +40,8 @@ public class CalendarioController {
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro calendario");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
             auditoria.setFecha(fecha1);
             auditoria.setIdusuario((int) requestBody.get("idadmin"));
             auditoriaServices.registrarAuditoria(auditoria);
@@ -92,6 +91,8 @@ public class CalendarioController {
                 Auditoria auditoria = new Auditoria();
                 auditoria.setInformacion(jsonString);
                 auditoria.setAccion("Actualizar datos del calendario");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+                String fecha1 = dateFormat.format(new Date());
                 auditoria.setFecha(fecha1); // Asegúrate de tener fecha1 definida adecuadamente
                 auditoria.setIdusuario((int) requestBody.get("idadmin"));
 

@@ -36,8 +36,7 @@ public class CitaController {
     AuditoriaServices auditoriaServices;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-    String fecha1 = dateFormat.format(new Date());
+
 
     @GetMapping("/lista")
     public List<String> listahoras(@RequestParam String fecha) {
@@ -82,6 +81,8 @@ public class CitaController {
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro cita para atencion del optometra");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+            String fecha1 = dateFormat.format(new Date());
             auditoria.setFecha(fecha1);
             auditoria.setIdusuario(idpaciente); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);
@@ -98,7 +99,7 @@ public class CitaController {
         Cita cita = citaService.citaCodigo(codigo);
 
         if (cita == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La cita con el idpaciente proporcionado no existe");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La cita no fue encontrada con ese codigo");
         }
 
         // Verificar si la cita existe y el código coincide
@@ -128,10 +129,12 @@ public class CitaController {
                 Auditoria auditoria = new Auditoria();
                 auditoria.setInformacion(jsonString); // Almacenar el estado como un String
                 auditoria.setAccion("Cancelar cita");
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+                String fecha1 = dateFormat.format(new Date());
                 auditoria.setFecha(fecha1);
                 auditoria.setIdusuario(cita.getIdpaciente()); // Suponiendo que idlogin es el ID del usuario que realiza la acción
                 auditoriaServices.registrarAuditoria(auditoria);
-                return ResponseEntity.ok("La cita fue eliminada correctamente.");
+                return ResponseEntity.ok(cita);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("La cita con el código proporcionado no existe.");
             }

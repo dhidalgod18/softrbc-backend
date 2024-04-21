@@ -21,11 +21,11 @@ public class EnvioCorreoImpl implements EnvioCorreoService {
     @Value("${app.chatbot.url}")
     private String urlchatbot;
     @Override
-    public void enviarCorreoRegistroOptometra(String destinatario, String asunto, String correoUsuario, String contraseñaGenerada, String codigorecuperacion) {
+    public void enviarCorreoRegistroOptometra(String destinatario, String asunto, String cedula, String contraseñaGenerada, String codigorecuperacion) {
         // Construye el mensaje de correo electrónico con la información requerida
         String mensaje = "Estimado(a) usuario,\n\n" +
                 "Se ha registrado exitosamente en nuestra plataforma.\n\n" +
-                "Correo electrónico: " + correoUsuario + "\n" +
+                "Usuario para acceder al sistema: " + cedula + "\n" +
                 "Contraseña generada: " + contraseñaGenerada + "\n"+
                 "Clave de recuperacion: " + codigorecuperacion + "\n\n" +
                 "Por favor, utilice esta información para iniciar sesión en nuestra aplicación. " +

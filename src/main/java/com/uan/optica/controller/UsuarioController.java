@@ -107,12 +107,8 @@ public class UsuarioController {
     @PostMapping("/nueva")
     public ResponseEntity<?> guardarNuevaUsuario(@RequestBody Map<String, Object> requestBody) {
         try {
-
             int idlogin = (int) requestBody.get("idadmin");
-            // Extraer los datos del usuario del cuerpo de la solicitud
             Map<String, Object> usuarioMap = (Map<String, Object>) requestBody.get("usuario");
-            System.out.println("Usuario: " + usuarioMap);
-            // Crear un objeto Usuario a partir de los datos recibidos
             Usuario usuario = new Usuario();
             usuario.setNombre((String) usuarioMap.get("nombre"));
             usuario.setApellido((String) usuarioMap.get("apellido"));
@@ -120,16 +116,12 @@ public class UsuarioController {
             usuario.setDireccion((String) usuarioMap.get("direccion"));
             usuario.setTelefono(Long.parseLong((String) usuarioMap.get("telefono")));
             String pass = generarPassword();
-            System.out.println(pass + "password que genero");
             String respass = passwordEncoder.encode(pass);
-            System.out.println(respass + "password encriptada");
             usuario.setPassword(respass);
             usuario.setCedula(Long.parseLong((String) usuarioMap.get("cedula")));
             usuario.setRol("ROLE_OPTOMETRA");
             String codigorec = generarCodigoRecuperacion();
-            System.out.println(codigorec + "codigo recuperacion que genero");
             String rescodigo = passwordEncoder.encode(codigorec);
-            System.out.println(rescodigo + "codigo encriptada");
             usuario.setCodigorecuperacion(rescodigo);
 
             Usuario usuarioexiste = usuarioService.obtenerUsuarioCedula(usuario.getCedula());
@@ -149,11 +141,10 @@ public class UsuarioController {
             optometra.setActivo(true);
             optometraService.crearOptometra(optometra);
             int idUsuarioAsignado = optometra.getIdusuario();
-            System.out.println(idUsuarioAsignado+"id tarjeta");
 
 
 
-            envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getCorreo(), pass,codigorec);
+            envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getCedula().toString(), pass,codigorec);
 
             Auditoria auditoria = new Auditoria();
             ObjectMapper objectMapper = new ObjectMapper();
@@ -173,6 +164,39 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
         }
     }
+    @PostMapping("/nuevaAdmin")
+    public ResponseEntity<?> admin() {
+        try {
+
+            Usuario usuario = new Usuario();
+            usuario.setNombre("Carlos Enrique");
+            usuario.setApellido("Hidalgo Chaverra");
+            usuario.setCorreo("chidalgodevia28@gmail.com");
+            usuario.setDireccion("Urbanizacion el encanto cs 10");
+            usuario.setTelefono(Long.parseLong((String) ("3133507814")));
+            String pass = "Colombia24*";
+            String respass = passwordEncoder.encode(pass);
+            usuario.setPassword(respass);
+            usuario.setCedula(Long.parseLong((String) ("71184737")));
+            usuario.setRol("ROLE_ADMIN");
+            String codigorec = generarCodigoRecuperacion();
+            String rescodigo = passwordEncoder.encode(codigorec);
+            usuario.setCodigorecuperacion(rescodigo);
+
+
+            usuarioService.crearPersona(usuario);
+            envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getCedula().toString(), pass,codigorec);
+
+            return ResponseEntity.ok().build(); // Registro exitoso
+
+
+        } catch (Exception e) {
+            String errorMessage = "Error al intentar registrar usuario: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+        }
+    }
+
+
 
     @PutMapping("/cambiarEstado")
     public ResponseEntity<?> editarEstadoOptometra(@RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
@@ -182,6 +206,8 @@ public class UsuarioController {
         Usuario resultadanterior = usuarioService.obtener(id);
         Optometra op = optometraService.obtener(resultadanterior.getIdusuario());
         Optometra optometraAnterior = new Optometra();
+        optometraAnterior.setIdusuario(op.getIdusuario());
+        optometraAnterior.setIdoptometra(op.getIdoptometra());
         optometraAnterior.setActivo(op.isActivo());
         boolean resultado = usuarioService.cambiarEstadoUsuario(id);
 
@@ -214,7 +240,6 @@ public class UsuarioController {
 
         // Buscar en la base de datos el usuario con el correo proporcionado
         Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(correo);
-        System.out.println(usuario.getCorreo()+"Que correo trae ");
 
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario con el correo proporcionado no existe");
