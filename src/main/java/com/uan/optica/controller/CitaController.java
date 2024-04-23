@@ -42,7 +42,6 @@ public class CitaController {
     public List<String> listahoras(@RequestParam String fecha) {
         List<String> horas = citaService.obtenerCita(fecha);
         for (String hora : horas) {
-            System.out.println("hora: " + hora + ", fecha: " + fecha);
         }
         return horas;
     }

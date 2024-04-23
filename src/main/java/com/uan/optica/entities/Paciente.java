@@ -27,7 +27,7 @@ public class Paciente {
 
    private Integer idhistoriaclinica;
 
-    private String nombreacompañante;
+    private String nombreacompanante;
 
 
 }

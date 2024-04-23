@@ -3,11 +3,8 @@ package com.uan.optica.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.uan.optica.entities.Auditoria;
-import com.uan.optica.entities.Calendario;
 import com.uan.optica.entities.Preguntas;
-import com.uan.optica.entities.UsuarioOptometraDTO;
 import com.uan.optica.service.AuditoriaServices;
-import com.uan.optica.service.CalendarioService;
 import com.uan.optica.service.PreguntasServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -106,7 +103,6 @@ public class PreguntasController {
     public ResponseEntity<?> eliminarPregunta(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
         Preguntas preguntas = preguntasServices.buscar(id);
         boolean eliminacionExitosa = preguntasServices.eliminarPregunta(id);
-        System.out.println(id+"Quien tiene");
         if (eliminacionExitosa) {
             Map<String, Object> informacionOptometra = new HashMap<>();
             informacionOptometra.put("Eliminar pregunta", preguntas);

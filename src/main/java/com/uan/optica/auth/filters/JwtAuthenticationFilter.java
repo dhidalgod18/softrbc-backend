@@ -129,7 +129,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         Map<String, Object> body = new HashMap<>();
-        body.put("message", "Error en la autenticacion username o password incorrecto");
+        body.put("message", "Error en la autenticacion cedula o password incorrecto");
         body.put("error", failed.getMessage());
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(401);

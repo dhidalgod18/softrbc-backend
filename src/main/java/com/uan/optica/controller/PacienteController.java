@@ -50,10 +50,7 @@ public class PacienteController {
     public ResponseEntity<?> guardarNuevoPaciente(@RequestBody Map<String, Object> requestBody) {
         try {
 
-            // Extraer los datos del usuario del cuerpo de la solicitud
             Map<String, Object> usuarioMap = (Map<String, Object>) requestBody.get("usuario");
-            System.out.println("Usuario: " + usuarioMap);
-            // Crear un objeto Usuario a partir de los datos recibidos
             Usuario usuario = new Usuario();
             usuario.setNombre((String) usuarioMap.get("nombre"));
             usuario.setApellido((String) usuarioMap.get("apellido"));
@@ -65,18 +62,12 @@ public class PacienteController {
             usuario.setPassword(passCodi);
             usuario.setCedula(Long.parseLong((String) usuarioMap.get("cedula")));
             String codigorec = generarCodigoRecuperacion();
-            System.out.println(codigorec + "codigo recuperacion que genero");
             String rescodigo = passwordEncoder.encode(codigorec);
-            System.out.println(rescodigo + "codigo encriptada");
             usuario.setCodigorecuperacion(rescodigo);
             usuario.setRol("ROLE_PACIENTE");
 
-            System.out.println(usuario.toString()+"El usuario");
-
-            // Crear el usuario
             usuarioService.crearPersona(usuario);
 
-            // Extraer el objeto Paciente del cuerpo de la solicitud
             Map<String, Object> pacienteMap = (Map<String, Object>) requestBody.get("paciente");
             String ocupacion = (String) pacienteMap.get("ocupacion");
             String fechaNacimientoStr = (String) pacienteMap.get("fechanacimiento");
@@ -91,14 +82,13 @@ public class PacienteController {
             boolean aceptar = (Boolean) pacienteMap.get("aceptarterminos");
             paciente.setAceptarterminos(aceptar);
             paciente.setIdhistoriaclinica(null);
-            String acompañante = (String) requestBody.get("nombreacompañante");
-            if (acompañante != null){
-                paciente.setNombreacompañante((String) requestBody.get("nombreacompañante"));
+            String acompanante = (String) requestBody.get("nombreacompañante");
+            if (acompanante != null){
+                paciente.setNombreacompanante((String) requestBody.get("nombreacompañante"));
             }else {
-                paciente.setNombreacompañante(null);
+                paciente.setNombreacompanante(null);
             }
 
-            System.out.println(paciente.toString()+"Paciente");
             pacienteService.crearPaciente(paciente);
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
             String fecha1 = dateFormat.format(new Date());
@@ -149,7 +139,6 @@ public class PacienteController {
             String ocupacion = (String) pacienteMap.get("ocupacion");
             String fechaNacimientoStr = (String) pacienteMap.get("fechanacimiento");
             String fechaNacimientoDateOnly = fechaNacimientoStr.substring(0, 10); // Extraer solo la parte de la fecha
-            LocalDate fechaNacimiento = LocalDate.parse(fechaNacimientoDateOnly);
             String genero = (String) pacienteMap.get("genero");
             Paciente paciente = new Paciente();
             paciente.setIdpaciente(idpaciente);

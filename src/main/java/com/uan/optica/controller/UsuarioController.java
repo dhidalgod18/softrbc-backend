@@ -235,22 +235,16 @@ public class UsuarioController {
     }
     @GetMapping("/verificarCodigoRecuperacion")
     public ResponseEntity<?> verificarCodigoRecuperacion(@RequestParam String correo, @RequestParam String codigorecuperacion) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-        String fecha1 = dateFormat.format(new Date());
 
-        // Buscar en la base de datos el usuario con el correo proporcionado
         Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(correo);
 
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario con el correo proporcionado no existe");
         }
 
-        // Verificar si el código de recuperación proporcionado coincide con el almacenado en la base de datos
         if (passwordEncoder.matches(codigorecuperacion, usuario.getCodigorecuperacion())) {
-            // Si coincide, devolver un mensaje de éxito y permitir al usuario agregar la nueva contraseña
             return ResponseEntity.ok().build();
         } else {
-            // Si no coincide, devolver un mensaje de error
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El código de recuperación proporcionado no es válido.");
         }
     }
@@ -260,13 +254,11 @@ public class UsuarioController {
 
         String cedula = (String) requestBody.get("cedula");
         String nuevaContrasena = (String) requestBody.get("nuevacontrasena");
-        // Buscar en la base de datos el usuario con el correo proporcionado
         Usuario usuario = usuarioService.obtenerUsuarioPorCorreo(cedula);
         if (usuario == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario con el correo proporcionado no existe");
         }
 
-        // Actualizar la contraseña del usuario
         boolean actualizacionContrasenaExitosa = usuarioService.actualizarContrasena(usuario.getIdusuario(), nuevaContrasena);
         if (actualizacionContrasenaExitosa) {
             Map<String, Object> estado = new HashMap<>();
