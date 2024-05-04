@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -40,9 +42,10 @@ public class CalendarioController {
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro calendario");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String fecha1 = dateFormat.format(new Date());
-            auditoria.setFecha(fecha1);
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
             auditoria.setIdusuario((int) requestBody.get("idadmin"));
             auditoriaServices.registrarAuditoria(auditoria);
 
@@ -91,9 +94,10 @@ public class CalendarioController {
                 Auditoria auditoria = new Auditoria();
                 auditoria.setInformacion(jsonString);
                 auditoria.setAccion("Actualizar datos del calendario");
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-                String fecha1 = dateFormat.format(new Date());
-                auditoria.setFecha(fecha1); // Asegúrate de tener fecha1 definida adecuadamente
+                LocalDateTime fechaHoraActual = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+                String fechaFormateada = fechaHoraActual.format(formatter);
+                auditoria.setFecha(fechaFormateada);
                 auditoria.setIdusuario((int) requestBody.get("idadmin"));
 
                 // Registrar la auditoría

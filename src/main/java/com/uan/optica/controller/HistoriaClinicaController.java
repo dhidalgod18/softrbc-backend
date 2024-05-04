@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +61,9 @@ public class HistoriaClinicaController {
     public ResponseEntity<?> guardarHistoriaClinica(@RequestBody Map<String, Object> requestBody) {
         try {
             int idhistoriaClinica = (int) requestBody.get("idhistoriaclinica");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String fecha1 = dateFormat.format(new Date());
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
 
             // Extraer los datos del usuario del cuerpo de la solicitud
             Map<String, Object> datosMap = (Map<String, Object>) requestBody.get("Anamnesis");
@@ -68,7 +71,7 @@ public class HistoriaClinicaController {
             Anamnesis anamnesis = new Anamnesis();
             anamnesis.setAnamnesis((String) datosMap.get("anamnesis"));
             anamnesis.setIdhistoriaclinica(idhistoriaClinica);
-            anamnesis.setFecha(fecha1);
+            anamnesis.setFecha(fechaFormateada);
             // Crear el usuario
             anamnesisService.agregarAnamnesis(anamnesis);
             // Extraer el objeto Antecedentes del cuerpo de la solicitud
@@ -78,7 +81,7 @@ public class HistoriaClinicaController {
             antecedentes.setOculares((String) antecedentesMap.get("antecedentesOculares"));
             antecedentes.setGenerales((String) antecedentesMap.get("antecedentesGenerales"));
             antecedentes.setIdhistoriaclinica(idhistoriaClinica);
-            antecedentes.setFecha(fecha1);
+            antecedentes.setFecha(fechaFormateada);
 
             // Crear antecedentes
             antecedentesService.agregarAntecedentes(antecedentes);
@@ -90,7 +93,7 @@ public class HistoriaClinicaController {
             rxUso.setOi((String) RxusoMap.get("rxusooi"));
             rxUso.setAddicion((String) RxusoMap.get("rxusoadd"));
             rxUso.setIdhistoriaclinica(idhistoriaClinica);
-            rxUso.setFecha(fecha1);
+            rxUso.setFecha(fechaFormateada);
 
 
 
@@ -107,7 +110,7 @@ public class HistoriaClinicaController {
             visionLejana.setDistanciapupilar((String) visionLejanaMap.get("distanciapupilar"));
             visionLejana.setExamenexterno((String) visionLejanaMap.get("externo"));
             visionLejana.setIdhistoriaclinica(idhistoriaClinica);
-            visionLejana.setFecha(fecha1);
+            visionLejana.setFecha(fechaFormateada);
 
             // Crear visionlejana
             visionLejanaService.agregarVisionLejana(visionLejana);
@@ -120,7 +123,7 @@ public class HistoriaClinicaController {
             visionProxima.setOd((String) visionProximaMap.get("vproximaod"));
             visionProxima.setOi((String) visionProximaMap.get("vproximaoi"));
             visionProxima.setIdhistoriaclinica(idhistoriaClinica);
-            visionProxima.setFecha(fecha1);
+            visionProxima.setFecha(fechaFormateada);
 
             // Crear visionproxima
             visionProximaService.agregarVisionProxima(visionProxima);
@@ -136,7 +139,7 @@ public class HistoriaClinicaController {
             motilidad.setOjodominante((String) motilidadMap.get("ojodominante"));
             motilidad.setManodominante((String) motilidadMap.get("manodominante"));
             motilidad.setIdhistoriaclinica(idhistoriaClinica);
-            motilidad.setFecha(fecha1);
+            motilidad.setFecha(fechaFormateada);
 
 
             // Crear motilidad
@@ -147,7 +150,7 @@ public class HistoriaClinicaController {
             oftalmoscopia.setOd((String) oftalmoscopiaMap.get("oftalmoscopiaod"));
             oftalmoscopia.setOi((String) oftalmoscopiaMap.get("oftalmoscopiaoi"));
             oftalmoscopia.setIdhistoriaclinica(idhistoriaClinica);
-            oftalmoscopia.setFecha(fecha1);
+            oftalmoscopia.setFecha(fechaFormateada);
 
 
             // Crear oftalmoscopia
@@ -158,7 +161,7 @@ public class HistoriaClinicaController {
             queratometria.setOd((String) queratometriaMap.get("queratometriaod"));
             queratometria.setOi((String) queratometriaMap.get("queratometriaoi"));
             queratometria.setIdhistoriaclinica(idhistoriaClinica);
-            queratometria.setFecha(fecha1);
+            queratometria.setFecha(fechaFormateada);
 
 
             // Crear queratometria
@@ -169,7 +172,7 @@ public class HistoriaClinicaController {
             retinoscopia.setOd((String) retinoscopiaMap.get("retinoscopiaod"));
             retinoscopia.setOi((String) retinoscopiaMap.get("retinoscopiaoi"));
             retinoscopia.setIdhistoriaclinica(idhistoriaClinica);
-            retinoscopia.setFecha(fecha1);
+            retinoscopia.setFecha(fechaFormateada);
 
 
 
@@ -198,7 +201,7 @@ public class HistoriaClinicaController {
                 rxFinal.setObservaciones(null);
             }
             rxFinal.setIdhistoriaclinica(idhistoriaClinica);
-            rxFinal.setFecha(fecha1);
+            rxFinal.setFecha(fechaFormateada);
 
 
 
@@ -215,7 +218,7 @@ public class HistoriaClinicaController {
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro Historia clinica del paciente "+ idpaciente);
-            auditoria.setFecha(fecha1);
+            auditoria.setFecha(fechaFormateada);
             auditoria.setIdusuario((int) pacienteMap.get("idoptometra"));
             auditoriaServices.registrarAuditoria(auditoria);
 

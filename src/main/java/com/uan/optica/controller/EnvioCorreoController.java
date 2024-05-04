@@ -30,6 +30,14 @@ public class EnvioCorreoController {
             return ResponseEntity.ok(response);
         }
 
+        @PostMapping("/modificacion")
+        public ResponseEntity<?> enviarCorreoModificacionOptometra(@RequestBody Correo correo) {
+            envioCorreoService.enviarCorreoRegistroOptometra(correo.getDestinatario(), correo.getAsunto(), correo.getCorreousuario(), correo.getContraseñagenerada(), correo.getCodigorecuperacion());
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Correo enviado");
+            return ResponseEntity.ok(response);
+        }
+
         @PostMapping("/citaverificacion")
         public ResponseEntity<?> enviarCorreoVerificacionCita(@RequestBody Correo correo) {
             envioCorreoService.enviarCorreoVerificacionCita(correo.getDestinatario(), correo.getCodigocita(), correo.getCita());

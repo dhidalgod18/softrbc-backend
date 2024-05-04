@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -80,9 +82,10 @@ public class CitaController {
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro cita para atencion del optometra");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String fecha1 = dateFormat.format(new Date());
-            auditoria.setFecha(fecha1);
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
             auditoria.setIdusuario(idpaciente); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);
 
@@ -128,9 +131,10 @@ public class CitaController {
                 Auditoria auditoria = new Auditoria();
                 auditoria.setInformacion(jsonString); // Almacenar el estado como un String
                 auditoria.setAccion("Cancelar cita");
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-                String fecha1 = dateFormat.format(new Date());
-                auditoria.setFecha(fecha1);
+                LocalDateTime fechaHoraActual = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+                String fechaFormateada = fechaHoraActual.format(formatter);
+                auditoria.setFecha(fechaFormateada);
                 auditoria.setIdusuario(cita.getIdpaciente()); // Suponiendo que idlogin es el ID del usuario que realiza la acción
                 auditoriaServices.registrarAuditoria(auditoria);
                 return ResponseEntity.ok(cita);

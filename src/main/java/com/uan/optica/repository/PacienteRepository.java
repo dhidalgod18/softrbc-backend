@@ -25,5 +25,4 @@ public interface PacienteRepository extends JpaRepository<Paciente, Integer> {
     @Query("SELECT u FROM Usuario u WHERE u.idusuario = :idusuario")
     Usuario findByUsuarioIdp(@Param("idusuario") int idusuario);
 
-
 }

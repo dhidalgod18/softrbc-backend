@@ -74,6 +74,31 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
     }
 
+    @Override
+    public boolean modificarContraseña(int idUsuario, String pass, String codigo) {
+        try {
+            Optional<Usuario> optionalUsuario = usuarioRepository.findById(idUsuario);
+            if (optionalUsuario.isPresent()) {
+                Usuario optometra = optionalUsuario.get();
+                optometra.setPassword(pass);
+                optometra.setCodigorecuperacion(codigo);
+                usuarioRepository.save(optometra);
+                return true;
+            } else {
+                return false; // El usuario no fue encontrado
+            }
+        } catch (NumberFormatException e) {
+            // Manejo de la excepción si el formato del teléfono es inválido
+            e.printStackTrace();
+            return false;
+        } catch (Exception e) {
+            // Manejo de otras excepciones
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     public boolean cambiarEstadoUsuario(int idUsuario) {
         Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
         if (usuario != null) {

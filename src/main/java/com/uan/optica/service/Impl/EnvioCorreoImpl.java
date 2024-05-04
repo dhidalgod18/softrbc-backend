@@ -38,6 +38,23 @@ public class EnvioCorreoImpl implements EnvioCorreoService {
     }
 
     @Override
+    public void enviarCorreoModificacionOptometra(String destinatario, String asunto, String cedula, String contraseñaGenerada, String codigorecuperacion) {
+        String mensaje = "Estimado(a) usuario,\n\n" +
+                "Se han modificado los datos exitosamente.\n\n" +
+                "Usuario para acceder al sistema: " + cedula + "\n" +
+                "Contraseña generada: " + contraseñaGenerada + "\n"+
+                "Clave de recuperacion: " + codigorecuperacion + "\n\n" +
+                "Por favor, utilice esta información para iniciar sesión en nuestra aplicación. " +
+                "Puede acceder al inicio de sesión aquí: " + loginUrl + "\n\n" +
+                "Atentamente,\n" +
+                "El Palacio de las Gafas";
+
+        enviarCorreo(destinatario, "Modificacion Exitoso", mensaje);
+
+    }
+
+
+    @Override
     public void enviarCorreoVerificacionCita(String destinatario, String codigoVerificacion, Cita cita) {
         // Construir el mensaje de correo electrónico para la verificación de la cita
         String mensaje = "Estimado(a) paciente,\n\n" +

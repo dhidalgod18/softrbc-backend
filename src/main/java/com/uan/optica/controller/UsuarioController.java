@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static com.uan.optica.filtros.CodigoRecuperacion.generarCodigoRecuperacion;
@@ -90,14 +92,30 @@ public class UsuarioController {
             Auditoria auditoria = new Auditoria();
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Actualizar datos del optometra");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String fecha1 = dateFormat.format(new Date());
-            auditoria.setFecha(fecha1);
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
             int idAdmin = (int) requestBody.get("idadmin");
             auditoria.setIdusuario(idAdmin);
 
             // Registrar la auditoría
             auditoriaServices.registrarAuditoria(auditoria);
+
+
+            if (optometraAnteriorCopia.getCorreo().equals(nuevocorreo)){
+
+
+            }else{
+                String pass = generarPassword();
+                String respass = passwordEncoder.encode(pass);
+                String codigorec = generarCodigoRecuperacion();
+                String rescodigo = passwordEncoder.encode(codigorec);
+                usuarioService.modificarContraseña(id, respass,rescodigo);
+
+                envioCorreoService.enviarCorreoModificacionOptometra(nuevocorreo, "Modificacion exitosa", optometraAnterior.getCedula().toString(), pass,codigorec);
+
+            }
 
             return ResponseEntity.ok("Datos del optometra actualizados exitosamente");
         } else {
@@ -151,9 +169,10 @@ public class UsuarioController {
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro de Optometra");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String fecha1 = dateFormat.format(new Date());
-            auditoria.setFecha(fecha1);
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
             auditoria.setIdusuario(idlogin);
             auditoriaServices.registrarAuditoria(auditoria);
             return ResponseEntity.ok().build(); // Registro exitoso
@@ -221,9 +240,10 @@ public class UsuarioController {
             Auditoria auditoria = new Auditoria();
             auditoria.setInformacion(String.valueOf(jsonString)); // Almacenar el estado como un String
             auditoria.setAccion("Cambiar estado del Optometra");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String fecha1 = dateFormat.format(new Date());
-            auditoria.setFecha(fecha1);
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
             auditoria.setIdusuario(idadmin); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);
 
@@ -269,9 +289,10 @@ public class UsuarioController {
             Auditoria auditoria = new Auditoria();
             auditoria.setInformacion(jsonString); // Almacenar el estado como un String
             auditoria.setAccion("Actualizar contraseña");
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String fecha1 = dateFormat.format(new Date());
-            auditoria.setFecha(fecha1);
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
             auditoria.setIdusuario(usuario.getIdusuario()); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);
             // Si la actualización de la contraseña es exitosa, devolver un mensaje de éxito

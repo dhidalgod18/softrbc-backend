@@ -44,7 +44,7 @@ public class SpringSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/calendario/cancelar/{fecha}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/paciente/pacienteEncontrado/{id}").hasRole("OPTOMETRA")
                 .requestMatchers(HttpMethod.POST, "/HistoriaClinica/nueva").hasRole("OPTOMETRA")
-                .requestMatchers(HttpMethod.GET, "/calendario/calendariooptometra").hasRole("PACIENTE")
+                .requestMatchers(HttpMethod.GET, "/calendario/calendariooptometra").hasAnyRole("PACIENTE", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/calendario/calendariolista").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/HistoriaClinica/crearhistoria").hasRole("OPTOMETRA")
                 .requestMatchers(HttpMethod.PUT, "/paciente/actualizar").hasRole("OPTOMETRA")

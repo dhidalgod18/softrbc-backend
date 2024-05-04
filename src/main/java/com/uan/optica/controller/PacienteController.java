@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 
@@ -42,8 +45,7 @@ public class PacienteController {
 
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-    String fecha1 = dateFormat.format(new Date());
+
 
 
     @PostMapping("/nueva")
@@ -90,16 +92,20 @@ public class PacienteController {
             }
 
             pacienteService.crearPaciente(paciente);
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String fecha1 = dateFormat.format(new Date());
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
             Auditoria auditoria = new Auditoria();
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro Paciente");
-            auditoria.setFecha(fecha1);
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
             auditoria.setIdusuario(paciente.getIdpaciente());
             auditoriaServices.registrarAuditoria(auditoria);
+
+            envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getCedula().toString(), pass,codigorec);
+
 
 
             return ResponseEntity.ok().build(); // Registro exitoso
@@ -172,7 +178,10 @@ public class PacienteController {
                 Auditoria auditoria = new Auditoria();
                 auditoria.setInformacion(jsonString);
                 auditoria.setAccion("Actualizar datos del paciente");
-                auditoria.setFecha(fecha1);
+                LocalDateTime fechaHoraActual = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+                String fechaFormateada = fechaHoraActual.format(formatter);
+                auditoria.setFecha(fechaFormateada);
                 auditoria.setIdusuario(idOptometra);
                 // Registrar la auditoría
                 auditoriaServices.registrarAuditoria(auditoria);

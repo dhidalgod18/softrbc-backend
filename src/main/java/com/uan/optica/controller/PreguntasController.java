@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +29,7 @@ public class PreguntasController {
     AuditoriaServices auditoriaServices;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-    String fecha1 = dateFormat.format(new Date());
+
 
     @GetMapping("/listaPreguntas")
     public List<Preguntas> listaOptometras() {
@@ -46,7 +47,10 @@ public class PreguntasController {
             String jsonString = objectMapper.writeValueAsString(requestBody);
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Registro preguntas chatbot");
-            auditoria.setFecha(fecha1);
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
             auditoria.setIdusuario((int) requestBody.get("idadmin")); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);
 
@@ -88,7 +92,10 @@ public class PreguntasController {
             Auditoria auditoria = new Auditoria();
             auditoria.setInformacion(jsonString);
             auditoria.setAccion("Actualizar datos de preguntas");
-            auditoria.setFecha(fecha1);
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
             int idAdmin = (int) requestBody.get("idadmin");
             auditoria.setIdusuario(idAdmin);
             auditoriaServices.registrarAuditoria(auditoria);
@@ -99,8 +106,8 @@ public class PreguntasController {
         }
     }
 
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<?> eliminarPregunta(@PathVariable("id") int id, @RequestBody Map<String, Object> requestBody) throws JsonProcessingException {
+    @DeleteMapping("/eliminar")
+    public ResponseEntity<?> eliminarPregunta(@RequestParam int id, @RequestParam int idadmin) throws JsonProcessingException {
         Preguntas preguntas = preguntasServices.buscar(id);
         boolean eliminacionExitosa = preguntasServices.eliminarPregunta(id);
         if (eliminacionExitosa) {
@@ -112,8 +119,11 @@ public class PreguntasController {
             Auditoria auditoria = new Auditoria();
             auditoria.setInformacion(jsonString); // Almacenar el estado como un String
             auditoria.setAccion("eliminar pregunta");
-            auditoria.setFecha(fecha1);
-            auditoria.setIdusuario((int) requestBody.get("idadmin")); // Suponiendo que idlogin es el ID del usuario que realiza la acción
+            LocalDateTime fechaHoraActual = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH:mm:ss");
+            String fechaFormateada = fechaHoraActual.format(formatter);
+            auditoria.setFecha(fechaFormateada);
+            auditoria.setIdusuario(idadmin); // Suponiendo que idlogin es el ID del usuario que realiza la acción
             auditoriaServices.registrarAuditoria(auditoria);
             return ResponseEntity.ok().build(); // Eliminación exitosa
         } else {

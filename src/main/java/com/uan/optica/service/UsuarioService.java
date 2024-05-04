@@ -15,6 +15,8 @@ public interface UsuarioService {
     List<UsuarioOptometraDTO> obtenerUsuariosOptometraDTO();
     boolean modificarDatosOptometra(int idUsuario, String nuevadireccion, String nuevocorreo, Long nuevotelefono);
 
+    boolean modificarContraseña(int idUsuario, String pass, String codigo);
+
     boolean cambiarEstadoUsuario(int idUsuario);
     Usuario obtenerUsuarioPorCorreo(String correo);
     boolean actualizarContrasena(int idUsuario, String nuevaContraseña);
