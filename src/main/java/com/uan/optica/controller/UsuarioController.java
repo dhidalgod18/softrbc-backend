@@ -113,7 +113,7 @@ public class UsuarioController {
                 String rescodigo = passwordEncoder.encode(codigorec);
                 usuarioService.modificarContraseña(id, respass,rescodigo);
 
-                envioCorreoService.enviarCorreoModificacionOptometra(nuevocorreo, "Modificacion exitosa", optometraAnterior.getCedula().toString(), pass,codigorec);
+                envioCorreoService.enviarCorreoModificacionOptometra(nuevocorreo, optometraAnterior.getNombre().toString(),codigorec);
 
             }
 
@@ -162,7 +162,7 @@ public class UsuarioController {
 
 
 
-            envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getCedula().toString(), pass,codigorec);
+            envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getNombre().toString(), pass,codigorec);
 
             Auditoria auditoria = new Auditoria();
             ObjectMapper objectMapper = new ObjectMapper();

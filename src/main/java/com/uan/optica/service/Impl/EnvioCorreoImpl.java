@@ -21,11 +21,12 @@ public class EnvioCorreoImpl implements EnvioCorreoService {
     @Value("${app.chatbot.url}")
     private String urlchatbot;
     @Override
-    public void enviarCorreoRegistroOptometra(String destinatario, String asunto, String cedula, String contraseñaGenerada, String codigorecuperacion) {
+    public void enviarCorreoRegistroOptometra(String destinatario, String asunto, String nombre, String contraseñaGenerada, String codigorecuperacion) {
         // Construye el mensaje de correo electrónico con la información requerida
         String mensaje = "Estimado(a) usuario,\n\n" +
                 "Se ha registrado exitosamente en nuestra plataforma.\n\n" +
-                "Usuario para acceder al sistema: " + cedula + "\n" +
+                "El usuario para acceder al sistema es el numero de cedula"+ "\n" +
+                "El nombre del usuario registrado es: " + nombre + "\n"+
                 "Contraseña generada: " + contraseñaGenerada + "\n"+
                 "Clave de recuperacion: " + codigorecuperacion + "\n\n" +
                 "Por favor, utilice esta información para iniciar sesión en nuestra aplicación. " +
@@ -37,12 +38,28 @@ public class EnvioCorreoImpl implements EnvioCorreoService {
 
     }
 
+    public void enviarCorreoRegistroOPaciente(String destinatario,String nombre, String codigorecuperacion) {
+        // Construye el mensaje de correo electrónico con la información requerida
+        String mensaje = "Estimado(a) usuario,\n\n" +
+                "Se ha registrado exitosamente en nuestra plataforma.\n\n" +
+                "El usuario para acceder al sistema es el numero de cedula"+ "\n" +
+                "El nombre del usuario registrado es: " + nombre + "\n"+
+                "Clave de recuperacion: " + codigorecuperacion + "\n\n" +
+                "Por favor, utilice esta información para iniciar sesión en nuestra aplicación. " +
+                "Puede acceder al inicio de sesión aquí: " + urlchatbot + "\n\n" +
+                "Atentamente,\n" +
+                "El Palacio de las Gafas";
+
+        enviarCorreo(destinatario, "Registro Exitoso", mensaje);
+
+    }
+
     @Override
-    public void enviarCorreoModificacionOptometra(String destinatario, String asunto, String cedula, String contraseñaGenerada, String codigorecuperacion) {
+    public void enviarCorreoModificacionOptometra(String destinatario, String nombre, String codigorecuperacion) {
         String mensaje = "Estimado(a) usuario,\n\n" +
                 "Se han modificado los datos exitosamente.\n\n" +
-                "Usuario para acceder al sistema: " + cedula + "\n" +
-                "Contraseña generada: " + contraseñaGenerada + "\n"+
+                "El usuario para acceder al sistema es el numero de cedula"+ "\n" +
+                "El nombre del usuario modificado es: " + nombre + "\n"+
                 "Clave de recuperacion: " + codigorecuperacion + "\n\n" +
                 "Por favor, utilice esta información para iniciar sesión en nuestra aplicación. " +
                 "Puede acceder al inicio de sesión aquí: " + loginUrl + "\n\n" +

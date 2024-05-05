@@ -104,7 +104,7 @@ public class PacienteController {
             auditoria.setIdusuario(paciente.getIdpaciente());
             auditoriaServices.registrarAuditoria(auditoria);
 
-            envioCorreoService.enviarCorreoRegistroOptometra(usuario.getCorreo(), "Registro exitoso", usuario.getCedula().toString(), pass,codigorec);
+            envioCorreoService.enviarCorreoRegistroOPaciente(usuario.getCorreo(), usuario.getNombre().toString(),codigorec);
 
 
 
